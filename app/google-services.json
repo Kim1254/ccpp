@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "39954910307",
+    "project_id": "ccpp-ec74d",
+    "storage_bucket": "ccpp-ec74d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39954910307:android:065bce10704088bf3fbc56",
+        "android_client_info": {
+          "package_name": "com.gachon.ccpp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39954910307-4llfg1q4s87m2rrckn8qmshtgfetab7k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gachon.ccpp",
+            "certificate_hash": "dafb3c05ee0b2ac4c3681ccbe90cb8911195e8ec"
+          }
+        },
+        {
+          "client_id": "39954910307-1lvac1l5h0iahihb6ig0eikpkqga00hn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJrIV15C9JmP6pmfQ3XhxNkApfGJGO9-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39954910307-1lvac1l5h0iahihb6ig0eikpkqga00hn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
