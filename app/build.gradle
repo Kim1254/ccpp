@@ -12,7 +12,7 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,6 +26,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions{
+        pickFirst 'androidsupportmultidexversion.txt'
+    }
 }
 
 dependencies {
@@ -38,6 +41,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.0")
     //parsing
     implementation 'org.jsoup:jsoup:1.11.3'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
