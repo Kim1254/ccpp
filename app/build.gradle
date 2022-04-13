@@ -40,7 +40,7 @@ dependencies {
     //cookie
     implementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.0")
     //parsing
-    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'org.jsoup:jsoup:1.13.1'
 
     implementation 'com.android.support:multidex:1.0.3'
 
