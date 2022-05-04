@@ -15,11 +15,11 @@
 
     <Button
         android:id="@+id/btnTop"
-        android:layout_width="405dp"
+        android:layout_width="408dp"
         android:layout_height="62dp"
         android:layout_marginTop="96dp"
 
-        android:background="@color/white"
+        app:backgroundTint="@color/white"
         android:paddingLeft="10dp"
         android:text="현재수강강좌"
         android:textColor="@color/black"
@@ -34,7 +34,7 @@
         android:id="@+id/btn2"
         android:layout_width="408dp"
         android:layout_height="59dp"
-        android:background="@color/white"
+        app:backgroundTint="@color/white"
 
         android:layout_marginTop="36dp"
         android:text="알림"
@@ -48,7 +48,7 @@
 
     <Button
         android:id="@+id/btn3"
-        android:background="@color/white"
+        app:backgroundTint="@color/white"
         android:layout_width="408dp"
         android:layout_height="57dp"
         android:layout_marginTop="48dp"
@@ -65,7 +65,7 @@
         android:id="@+id/btn4"
         android:layout_width="410dp"
         android:layout_height="58dp"
-        android:background="@color/white"
+        app:backgroundTint="@color/white"
         android:layout_marginTop="44dp"
         android:text="대화"
         android:textColor="@color/black"
@@ -81,7 +81,7 @@
         android:layout_width="410dp"
         android:layout_height="53dp"
         android:layout_marginTop="44dp"
-        android:background="@color/white"
+        app:backgroundTint="@color/white"
         android:text="설정"
         android:textColor="@color/black"
         android:textSize="22dp"
