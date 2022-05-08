@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.jueun.termproject.TitleBar_main" />
+
+    <TextView
+        android:id="@+id/notificationText"
+        android:layout_below="@id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notifications"
+        android:textSize="20dp"
+        android:padding="10dp"/>
+
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/notificationGrid"
+        android:layout_below="@id/notificationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:columnCount="3">
+
+        <Button
+            android:layout_width="130dp"
+            android:layout_height="180dp"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/announcement_xml"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerInside"
+            android:text="Announcement (2)"
+            android:textSize="11sp"
+            android:textAllCaps="false"
+            android:textColor="@color/material_dynamic_neutral70" />
+
+        <Button
+            android:layout_width="130dp"
+            android:layout_height="180dp"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/assignment_xml"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerInside"
+            android:text="Assignment (5)"
+            android:textSize="11sp"
+            android:textAllCaps="false"
+            android:textColor="@color/material_dynamic_neutral70" />
+
+        <Button
+            android:layout_width="130dp"
+            android:layout_height="180dp"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/comment_xml"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerInside"
+            android:text="Comment (1)"
+            android:textSize="11sp"
+            android:textAllCaps="false"
+            android:textColor="@color/material_dynamic_neutral70" />
+
+    </androidx.gridlayout.widget.GridLayout>
+
+    <TextView
+        android:id="@+id/weeklyCourseText"
+        android:layout_below="@id/notificationGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Weekly Course"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:layout_marginTop="50dp"/>
+
+    <GridView
+        android:id="@+id/weeklyCourseGridView"
+        android:layout_below="@id/weeklyCourseText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:numColumns="2">
+
+    </GridView>
+
+</RelativeLayout>
