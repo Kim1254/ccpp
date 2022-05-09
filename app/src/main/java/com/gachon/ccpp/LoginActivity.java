@@ -4,23 +4,30 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gachon.ccpp.api.UserManager;
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -32,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
     RetrofitAPI api;
     EditText username,password;
     CheckBox autoLogin;
+
+    UserManager userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.input_password);
         autoLogin = findViewById(R.id.auto_login);
 
-        if (PreferenceManager.getDefaultSharedPreferences(this).getString("username",null)!=null){
+        if (PreferenceManager.getDefaultSharedPreferences(this).getString("username",null)!=null) {
             tryGetCookie(PreferenceManager.getDefaultSharedPreferences(this).getString("username",null),
                     PreferenceManager.getDefaultSharedPreferences(this).getString("password",null));
             try {
@@ -53,21 +62,17 @@ public class LoginActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            isLoginSucceed();
         }
 
-        Button login_button =findViewById(R.id.login);
-        login_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tryGetCookie(username.getText().toString(),password.getText().toString());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                isLoginSucceed();
+        Button login_button = findViewById(R.id.login);
+        login_button.setOnClickListener(view -> {
+            tryGetCookie(username.getText().toString(), password.getText().toString());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
         });
     }
 
@@ -81,41 +86,50 @@ public class LoginActivity extends AppCompatActivity {
         Call<ResponseBody> login = api.login(username,password);
         login.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (!response.isSuccessful()) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful())
+                    isLoginSucceed();
+                else
                     Toast.makeText(LoginActivity.this, "onResponse 실패", Toast.LENGTH_LONG).show();
-                }
             }
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Toast.makeText(LoginActivity.this, "onFailure " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    private void testUser() {
+        userData = new UserManager("testvalue", "202000000");
+    }
+
     public void isLoginSucceed(){
         Call<ResponseBody> connect = api.getUri("");
         connect.enqueue(new Callback<ResponseBody>() {
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    try{
+                    try {
                         Document html = Jsoup.parse(response.body().string());
                         Elements htmlLogin = html.select(".html_login");
-                        if(htmlLogin.size() == 0) {
+                        if (htmlLogin.size() == 0) {
                             Toast.makeText(LoginActivity.this, "안녕하세요 " + html.select(".user_department.hidden-xs").text()+"님", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                            Elements elements=html.select(".course-title h3");
-                            String str = "";
-                            for(Element e : elements){
-                                str += e.text()+"\n";
-                            }
-                            intent.putExtra("html",str);
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Elements elements = html.select(".course-title h3");
+
+                            JSONObject data = new JSONObject();
+
+                            int i = 0;
+                            for (Element e : elements)
+                                data.put("" + i++, e.text());
+
+                            intent.putExtra("html", data.toString());
                             startActivity(intent);
                             finish();
-                        }else{
+                        } else {
                             Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 다시 확인해 주세요",Toast.LENGTH_LONG).show();
                         }
-                    }catch (IOException e){
+                    } catch (IOException | JSONException e){
                         Toast.makeText(LoginActivity.this, e.getMessage(),Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -123,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Toast.makeText(LoginActivity.this,"onFailure "+t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
