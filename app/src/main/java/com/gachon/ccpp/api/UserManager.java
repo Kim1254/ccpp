@@ -32,9 +32,8 @@ public class UserManager extends WebSocketListener {
             String unifiedId = sId + id;
             String plain = DataHandler.packData(REQUEST_TYPE.LOGIN, DATA_TYPE.OBJECT, unifiedId);
             String encrypted = enc.doEncrypt(plain, plain.length());
-            Log.d("CCPP", "P: " + plain + ", E: " + encrypted);
 
-            Request request = new Request.Builder().url("wss://ccppdemo.herokuapp.com/ws").build();
+            Request request = new Request.Builder().url("wss://ccppwebserver.herokuapp.com/ws").build();
 
             clientSocket = new OkHttpClient().newWebSocket(request, this);
             clientSocket.send(encrypted);
@@ -52,7 +51,6 @@ public class UserManager extends WebSocketListener {
         try {
             String plain = dec.doDecrypt(message, message.length());
             JSONObject data = DataHandler.parse(plain);
-            Log.d("CCPP", plain);
 
             switch (REQUEST_TYPE.valueOf((String)data.get("request"))) {
                 case LOGIN:

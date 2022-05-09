@@ -87,8 +87,10 @@ public class LoginActivity extends AppCompatActivity {
         login.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful())
+                if (response.isSuccessful()) {
+                    testUser();
                     isLoginSucceed();
+                }
                 else
                     Toast.makeText(LoginActivity.this, "onResponse 실패", Toast.LENGTH_LONG).show();
             }
