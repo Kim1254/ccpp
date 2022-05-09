@@ -1,3 +1,33 @@
 <resources>
-    <string name="app_name">ccpp</string>
+    <string name="app_name">CyberCampus++</string>
+
+    <string name="LoginLayout_EmailHint">Email</string>
+    <string name="LoginLayout_doLogin">Login</string>
+    <string name="LoginLayout_FindPW">FORGOT PASSWORD?</string>
+
+    <string name="LoginActivity_Title">LOGIN</string>
+    <string name="LoginActivity_Greeting">Hello</string>
+    <string name="LoginActivity_Description">Enter your ID and password.</string>
+    <string name="LoginActivity_HintID">ID</string>
+    <string name="LoginActivity_doLogin">Login</string>
+    <string name="LoginActivity_AutoLogin">Auto Login</string>
+    <string name="LoginActivity_HintPW">Password</string>
+
+    <string name="LoginActivity_LoginNoResponse">Error: No response on login request</string>
+    <string name="LoginActivity_LoginOnFailure">Error: Failure on login: %1$s</string>
+    <string name="LoginActivity_LoginSuccess">Welcome %1$s</string>
+    <string name="LoginActivity_LoginIncorrect">Incorrect ID or password. Please try again.</string>
+    <string name="LoginActivity_LoginParseError">Error on data parsing: %1$s</string>
+
+    <string name="MainActivity_Footer_Lecture">Lecture</string>
+    <string name="MainActivity_Footer_Schedule">Schedule</string>
+    <string name="MainActivity_Footer_Alarm">Alarm</string>
+    <string name="MainActivity_Footer_Chat">Chat</string>
+    <string name="MainActivity_Footer_Setting">Setting</string>
+
+    <string name="LoadingDialog_TextLogin">Logging in…</string>
+    <string name="LoadingDialog_TextLoading">Loading…</string>
+
+    <string name="MainFragment_Lecture_Title">Lecture</string>
+
 </resources>

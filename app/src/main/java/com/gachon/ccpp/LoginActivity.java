@@ -2,18 +2,18 @@ package com.gachon.ccpp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gachon.ccpp.api.UserManager;
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
 
@@ -25,9 +25,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -40,12 +37,15 @@ public class LoginActivity extends AppCompatActivity {
     EditText username,password;
     CheckBox autoLogin;
 
-    UserManager userData;
+    TextView description;
+    LoadingDialog privateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        getSupportActionBar().setTitle(R.string.LoginActivity_Title);
 
         retrofitClient = RetrofitClient.getInstance();
         api = RetrofitClient.getRetrofitInterface();
@@ -54,25 +54,17 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.input_password);
         autoLogin = findViewById(R.id.auto_login);
 
+        description = findViewById(R.id.login_desc);
+        privateDialog = new LoadingDialog(this);
+
         if (PreferenceManager.getDefaultSharedPreferences(this).getString("username",null)!=null) {
             tryGetCookie(PreferenceManager.getDefaultSharedPreferences(this).getString("username",null),
                     PreferenceManager.getDefaultSharedPreferences(this).getString("password",null));
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
         Button login_button = findViewById(R.id.login);
         login_button.setOnClickListener(view -> {
             tryGetCookie(username.getText().toString(), password.getText().toString());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
         });
     }
 
@@ -83,29 +75,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void tryGetCookie(String username, String password) {
-        Call<ResponseBody> login = api.login(username,password);
+        privateDialog.show("81217-locker.json", getString(R.string.LoadingDialog_TextLogin));
+
+        Call<ResponseBody> login = api.login(username, password);
         login.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    testUser();
-                    isLoginSucceed();
-                }
+                if (response.isSuccessful())
+                    checkLogin();
                 else
-                    Toast.makeText(LoginActivity.this, "onResponse 실패", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this,
+                            R.string.LoginActivity_LoginNoResponse, Toast.LENGTH_LONG).show();
             }
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Toast.makeText(LoginActivity.this, "onFailure " + t.getMessage(), Toast.LENGTH_LONG).show();
+                String text = getString(R.string.LoginActivity_LoginOnFailure, t.getMessage());
+                Toast.makeText(LoginActivity.this, text, Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void testUser() {
-        userData = new UserManager("testvalue", "202000000");
-    }
-
-    public void isLoginSucceed(){
+    public void checkLogin() {
         Call<ResponseBody> connect = api.getUri("");
         connect.enqueue(new Callback<ResponseBody>() {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
@@ -114,33 +104,47 @@ public class LoginActivity extends AppCompatActivity {
                         Document html = Jsoup.parse(response.body().string());
                         Elements htmlLogin = html.select(".html_login");
                         if (htmlLogin.size() == 0) {
-                            Toast.makeText(LoginActivity.this, "안녕하세요 " + html.select(".user_department.hidden-xs").text()+"님", Toast.LENGTH_LONG).show();
+                            String text = getString(R.string.LoginActivity_LoginSuccess,
+                                    html.select(".user_department.hidden-xs").text());
+                            Toast.makeText(LoginActivity.this, text, Toast.LENGTH_LONG).show();
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            Elements elements = html.select(".course-title h3");
 
-                            JSONObject data = new JSONObject();
+                            privateDialog.hide();
 
-                            int i = 0;
-                            for (Element e : elements)
-                                data.put("" + i++, e.text());
-
-                            intent.putExtra("html", data.toString());
+                            intent.putExtra("id", username.getText());
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 다시 확인해 주세요",Toast.LENGTH_LONG).show();
+                            privateDialog.hide();
+
+                            description.setText(R.string.LoginActivity_LoginIncorrect);
+                            description.setTextColor(Color.RED);
+                            /*Toast.makeText(LoginActivity.this,
+                                    R.string.LoginActivity_LoginIncorrect,Toast.LENGTH_LONG).show();*/
                         }
-                    } catch (IOException | JSONException e){
-                        Toast.makeText(LoginActivity.this, e.getMessage(),Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        privateDialog.hide();
+                        String text = getString(R.string.LoginActivity_LoginParseError, e.getMessage());
+                        description.setText(text);
+                        description.setTextColor(Color.RED);
+                        //Toast.makeText(LoginActivity.this, text, Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "onResponse 실패",Toast.LENGTH_LONG).show();
+                    privateDialog.hide();
+                    description.setText(R.string.LoginActivity_LoginNoResponse);
+                    description.setTextColor(Color.RED);
+                    /*Toast.makeText(LoginActivity.this,
+                            R.string.LoginActivity_LoginNoResponse, Toast.LENGTH_LONG).show();*/
                 }
             }
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Toast.makeText(LoginActivity.this,"onFailure "+t.getMessage(),Toast.LENGTH_LONG).show();
+                privateDialog.hide();
+                String text = getString(R.string.LoginActivity_LoginOnFailure, t.getMessage());
+                description.setText(text);
+                description.setTextColor(Color.RED);
+                //Toast.makeText(LoginActivity.this, text, Toast.LENGTH_LONG).show();
             }
         });
     }

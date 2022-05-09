@@ -4,15 +4,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView2"
+    <LinearLayout
+        android:id="@+id/fragLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="TextView"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/footer"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/border_bg"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/footer_lecture"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_lecture"
+            android:drawableTint="@color/purple_500"
+            android:text="@string/MainActivity_Footer_Lecture"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/footer_schedule"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_schedule"
+            android:drawableTint="@color/purple_500"
+            android:text="@string/MainActivity_Footer_Schedule"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/footer_alarm"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_alarm"
+            android:drawableTint="@color/purple_500"
+            android:text="@string/MainActivity_Footer_Alarm"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/footer_chat"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_chat"
+            android:drawableTint="@color/purple_500"
+            android:text="@string/MainActivity_Footer_Chat"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/footer_setting"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_setting"
+            android:drawableTint="@color/purple_500"
+            android:text="@string/MainActivity_Footer_Setting"
+            android:textSize="10dp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
