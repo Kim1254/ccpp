@@ -71,7 +71,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(autoLogin.isChecked())saveData(username,password);
+        if(autoLogin.isChecked())
+            saveData(username, password);
     }
 
     public void tryGetCookie(String username, String password) {
@@ -112,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             privateDialog.hide();
 
-                            intent.putExtra("id", username.getText());
+                            intent.putExtra("id", username.getText().toString());
                             startActivity(intent);
                             finish();
                         } else {
