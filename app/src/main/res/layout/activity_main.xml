@@ -11,9 +11,118 @@
         android:id="@+id/fragLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/footer"
-        android:orientation="horizontal">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.141"
+        tools:layout_editor_absoluteX="0dp">
+
+        <Button
+            android:id="@+id/btn1"
+            android:layout_width="410dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:backgroundTint="@color/grey"
+            android:paddingLeft="10dp"
+            android:text="졸업작품1(11852_003)"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.833"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextContrastCheck" />
+
+        <Button
+            android:id="@+id/btn2"
+            android:layout_width="410dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+
+            android:backgroundTint="@color/grey"
+            android:paddingLeft="10dp"
+            android:text="일본어1 (05310_004)"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.165"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnTop" />
+
+        <Button
+            android:id="@+id/btn3"
+            android:layout_width="410dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:backgroundTint="@color/grey"
+            android:paddingLeft="10dp"
+            android:text="모바일프로그래밍(14454_004)"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.165"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn2" />
+
+        <Button
+            android:id="@+id/btn4"
+            android:layout_width="410dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:backgroundTint="@color/grey"
+            android:paddingLeft="10dp"
+            android:text="경영학원론 (10375_001)"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.165"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn3" />
+
+        <Button
+            android:id="@+id/btn5"
+            android:layout_width="410dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:backgroundTint="@color/grey"
+            android:paddingLeft="10dp"
+            android:text="소프트웨어산업세미나 (13221_001)"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.165"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn4" />
+
+        <Button
+            android:id="@+id/btn6"
+            android:layout_width="410dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:backgroundTint="@color/grey"
+            android:paddingLeft="10dp"
+            android:text="소프트웨어공학 (10017_001)"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.165"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn5" />
+
+        <Button
+            android:id="@+id/btn7"
+            android:layout_width="410dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:backgroundTint="@color/grey"
+            android:paddingLeft="10dp"
+            android:text="데이터과학 (14457_001)"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.165"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn6" />
 
     </LinearLayout>
 
