@@ -27,6 +27,6 @@ public interface RetrofitAPI {
     );
 
     @Headers("Accept-Language: ko-KR,ko;q=0.9")
-    @GET("/{uri}")
-    Call<ResponseBody> getUri(@Path("uri")String uri);
+    @GET
+    Call<ResponseBody> getUri(@Url String uri);
 }
