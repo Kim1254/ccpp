@@ -30,20 +30,13 @@ public class UserManager extends WebSocketListener {
     public UserManager(String id, String sId) {
         try {
             String unifiedId = sId + id;
-<<<<<<< Updated upstream
-            String plain = DataHandler.packData(REQUEST_TYPE.LOGIN, DATA_TYPE.OBJECT, unifiedId);
-            String encrypted = enc.doEncrypt(plain, plain.length());
-=======
             String plain = DataHandler.packData(MSG_ID.LOGIN, "id", unifiedId);
             String cipher = enc.doEncrypt(plain, plain.length());
-
-            Log.d("CCPP", "Try to login with " + plain + ", Sent encrypted " + cipher);
->>>>>>> Stashed changes
 
             Request request = new Request.Builder().url("wss://ccppwebserver.herokuapp.com/ws").build();
 
             clientSocket = new OkHttpClient().newWebSocket(request, this);
-            clientSocket.send(encrypted);
+            clientSocket.send(cipher);
         } catch (Exception e) {
             e.printStackTrace();
         }
