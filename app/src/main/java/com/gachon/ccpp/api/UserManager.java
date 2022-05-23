@@ -30,8 +30,15 @@ public class UserManager extends WebSocketListener {
     public UserManager(String id, String sId) {
         try {
             String unifiedId = sId + id;
+<<<<<<< Updated upstream
             String plain = DataHandler.packData(REQUEST_TYPE.LOGIN, DATA_TYPE.OBJECT, unifiedId);
             String encrypted = enc.doEncrypt(plain, plain.length());
+=======
+            String plain = DataHandler.packData(MSG_ID.LOGIN, "id", unifiedId);
+            String cipher = enc.doEncrypt(plain, plain.length());
+
+            Log.d("CCPP", "Try to login with " + plain + ", Sent encrypted " + cipher);
+>>>>>>> Stashed changes
 
             Request request = new Request.Builder().url("wss://ccppwebserver.herokuapp.com/ws").build();
 
@@ -50,25 +57,32 @@ public class UserManager extends WebSocketListener {
     public void handleMessage(@NonNull String message) {
         try {
             String plain = dec.doDecrypt(message, message.length());
-            JSONObject data = DataHandler.parse(plain);
+            JSONObject data = new JSONObject(plain);
 
-            switch (REQUEST_TYPE.valueOf((String)data.get("request"))) {
+            switch (MSG_ID.valueOf((String)data.get("request"))) {
                 case LOGIN:
-                    if (DATA_TYPE.valueOf((String)data.get("type")) != DATA_TYPE.BOOLEAN)
-                        break;
-
-                    if ((Boolean)data.get("value")) {
-                        uId = (String) data.get("extra");
+                    if (data.has("uId")) {
+                        uId = (String)data.get("uId");
                         Log.d("CCPP", "Sucessfully logined with: " + uId);
                     }
                     else
-                        Log.d("CCPP", "Login failed.");
+                        Log.d("CCPP", "Failed to login.");
+                    break;
+                case CHAT:
+                    if (data.has("result")) {
+                        Log.d("CCPP", "Test: " + data);
+                    }
+                    break;
+                case ALARM:
+                    if (data.has("result")) {
+                        Log.d("CCPP", "Test: " + data);
+                    }
                     break;
                 default:
                     break;
             }
         } catch (Exception e) {
-            Log.d("CCPP", "Failed parsing json file: " + message + ", " + e.toString());
+            Log.d("CCPP", "Failed parsing json file: " + message + ", " + e);
         }
     }
 
