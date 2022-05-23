@@ -2,13 +2,17 @@ package com.gachon.ccpp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.gachon.ccpp.network.RetrofitAPI;
@@ -22,6 +26,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -29,24 +34,27 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.gachon.ccpp.api.UserManager;
+import com.gachon.ccpp.parser.HtmlParser;
+import com.gachon.ccpp.parser.ListForm;
 
 public class MainActivity extends AppCompatActivity {
     RetrofitClient retrofitClient;
     RetrofitAPI api;
+    HtmlParser parser;
 
     private static final String baseUrl = "https://cyber.gachon.ac.kr";
     private static final String keyword = "/user/edit.php";
 
     LoadingDialog privateDialog;
+    LectureFragment lecture;
 
     private UserManager userManager;
 
-    private FragmentManager fragManager;
     private FragmentTransaction transaction;
 
-    private LectureFragment Lecture;
-
     private String sourceId;
+
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,128 +63,120 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         sourceId = intent.getStringExtra("id");
+        bundle = new Bundle();
+        bundle.putSerializable("courseList",intent.getSerializableExtra("courseList"));
 
         getSupportActionBar().hide();
 
         retrofitClient = RetrofitClient.getInstance();
         api = RetrofitClient.getRetrofitInterface();
+        parser = new HtmlParser();
 
         privateDialog = new LoadingDialog(this);
 
-        Lecture = new LectureFragment();
-
         infoRequest();
+
+        lecture = new LectureFragment();
+        AlarmFragment alarm = new AlarmFragment();
+        ChatFragment chat = new ChatFragment();
+        ScheduleFragment schedule = new ScheduleFragment();
+        SettingFragment setting = new SettingFragment();
+
+        lecture.setArguments(bundle);
+
+
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragLayout, lecture).commit();
+
+        Button lectureButton = findViewById(R.id.footer_lecture);
+        lectureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragLayout, lecture).commit();
+            }
+        });
+
+        Button scheduleButton = findViewById(R.id.footer_schedule);
+        scheduleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragLayout, schedule).commit();
+            }
+        });
+
+        Button alarmButton = findViewById(R.id.footer_alarm);
+        alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragLayout, alarm).commit();
+            }
+        });
+
+        Button chatButton = findViewById(R.id.footer_chat);
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragLayout, chat).commit();
+            }
+        });
+
+        Button settingButton = findViewById(R.id.footer_setting);
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragLayout, setting).commit();
+            }
+        });
     }
 
     public void infoRequest() {
-        privateDialog.show("9844-loading-40-paperplane.json",
-                getString(R.string.LoadingDialog_TextLoading));
+        privateDialog.show("9844-loading-40-paperplane.json", getString(R.string.LoadingDialog_TextLoading));
 
-        Call<ResponseBody> connect = api.getUri("");
+        Call<ResponseBody> connect = api.getUri("user/user_edit.php");
         connect.enqueue(new Callback<ResponseBody>() {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
                         Document html = Jsoup.parse(response.body().string());
-                        Elements article = html.select(".user-info-submenu.clearfix");
-                        if (article.size() != 0) {
-                            article = article.select("li.items");
-
-                            String link = article.first().select("a").attr("abs:href");
-                            if (link.contains(baseUrl + keyword)) {
-                                connRequest(link.substring((baseUrl + keyword).length() + 4));
-                            }
-                        }
+                        parser.setHtml(html);
+                        int studentId = Integer.parseInt(parser.getStudentInfo().get(0));
+                        makeConnection(studentId);
                     } catch (Exception e) {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
             }
         });
-    }
-
-    public void connRequest(String id) {
-        Call<ResponseBody> connect = api.info(id);
-        connect.enqueue(new Callback<ResponseBody>() {
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        Document html = Jsoup.parse(response.body().string());
-                        Elements article = html.select(".felement");
-                        if (article.size() != 0) {
-                            for (Element e : article) {
-                                try {
-                                    int num = Integer.parseInt(e.text());
-                                    makeConnection(num);
-                                    break;
-                                } catch (NumberFormatException exception) {
-                                    continue;
-                                }
-                            }
-                        }
-                    } catch (IOException e) {
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-            }
-        });
-
-        homeRequest();
+        privateDialog.hide();
     }
 
     public void makeConnection(int id) {
         userManager = new UserManager(sourceId, String.valueOf(id));
     }
-
-    public void homeRequest() {
+    public void courseListRequest() {
         Call<ResponseBody> connect = api.getUri("");
         connect.enqueue(new Callback<ResponseBody>() {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        Document html = Jsoup.parse(response.body().string());
-                        Elements elements = html.select(".course-title h3");
-
-                        JSONObject data = new JSONObject();
-                        for (Element e : elements)
-                            data.put(e.text(), "");
-
-                        Lecture.appendList(data.toString());
-                        deployLecture();
-                    } catch (IOException | JSONException e) {
-                        privateDialog.hide();
-                        String text = getString(R.string.LoginActivity_LoginParseError, e.getMessage());
-                        Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+                        HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
+                        ArrayList<ListForm> courseList = parser.getCourseList();
+                        bundle.putSerializable("courseList", courseList);
+                    } catch (Exception e) {
                     }
-                } else {
-                    privateDialog.hide();
-                    Toast.makeText(MainActivity.this,
-                            R.string.LoginActivity_LoginNoResponse, Toast.LENGTH_LONG).show();
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                privateDialog.hide();
-                String text = getString(R.string.LoginActivity_LoginOnFailure, t.getMessage());
-                Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"fail",Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    public void deployLecture() {
-        getSupportActionBar().setTitle(R.string.MainFragment_Lecture_Title);
-        getSupportActionBar().show();
-
-        fragManager = getSupportFragmentManager();
-
-        transaction = fragManager.beginTransaction();
-        transaction.replace(R.id.fragLayout, Lecture).commitAllowingStateLoss();
-        privateDialog.hide();
     }
 }

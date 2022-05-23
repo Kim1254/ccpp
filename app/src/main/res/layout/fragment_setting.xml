@@ -22,12 +22,7 @@
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="lecture" />
-
-            <TextView
-                android:id="@+id/testText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:text="setting" />
         </LinearLayout>
 
     </ScrollView>

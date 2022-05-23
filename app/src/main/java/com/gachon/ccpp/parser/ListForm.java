@@ -1,6 +1,8 @@
 package com.gachon.ccpp.parser;
 
-public class ListForm {
+import java.io.Serializable;
+
+public class ListForm implements Serializable {
     public String title;
     public String date;
     public String writer;
