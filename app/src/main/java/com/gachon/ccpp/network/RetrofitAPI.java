@@ -8,6 +8,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitAPI {
 
@@ -20,6 +21,12 @@ public interface RetrofitAPI {
     );
 
     @Headers("Accept-Language: ko-KR,ko;q=0.9")
-    @GET("/{uri}")
-    Call<ResponseBody> getUri(@Path("uri")String uri);
+    @GET("/user/user_edit.php")
+    Call<ResponseBody> info (
+            @Query("id") String id
+    );
+
+    @Headers("Accept-Language: ko-KR,ko;q=0.9")
+    @GET
+    Call<ResponseBody> getUri(@Url String uri);
 }

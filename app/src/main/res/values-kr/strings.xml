@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">CyberCampus++</string>
+
+    <string name="LoginLayout_EmailHint">이메일</string>
+    <string name="LoginLayout_doLogin">로그인</string>
+    <string name="LoginLayout_FindPW">암호를 잊으셨나요?</string>
+
+    <string name="LoginActivity_Title">로그인</string>
+    <string name="LoginActivity_Greeting">안녕하세요</string>
+    <string name="LoginActivity_Description">아이디 및 비밀번호를 입력해주세요.</string>
+    <string name="LoginActivity_HintID">ID</string>
+    <string name="LoginActivity_doLogin">로그인</string>
+    <string name="LoginActivity_AutoLogin">자동 로그인</string>
+    <string name="LoginActivity_HintPW">비밀번호</string>
+
+    <string name="LoginActivity_LoginNoResponse">오류: 요청으로부터 응답이 없습니다.</string>
+    <string name="LoginActivity_LoginOnFailure">오류: 요청 응답에 실패하였습니다: %1$s</string>
+    <string name="LoginActivity_LoginSuccess">안녕하세요 %1$s 님.</string>
+    <string name="LoginActivity_LoginIncorrect">아이디와 비밀번호를 다시 확인해 주세요</string>
+    <string name="LoginActivity_LoginParseError">오류: 데이터 파싱 중 오류 발생: %1$s</string>
+
+    <string name="MainActivity_Footer_Lecture">강의</string>
+    <string name="MainActivity_Footer_Schedule">일정</string>
+    <string name="MainActivity_Footer_Alarm">알림</string>
+    <string name="MainActivity_Footer_Chat">채팅</string>
+    <string name="MainActivity_Footer_Setting">설정</string>
+
+    <string name="LoadingDialog_TextLogin">로그인 중…</string>
+    <string name="LoadingDialog_TextLoading">로딩 중…</string>
+
+    <string name="MainFragment_Lecture_Title">강의</string>
+
+</resources>
