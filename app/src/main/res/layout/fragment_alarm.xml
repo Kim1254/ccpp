@@ -6,9 +6,9 @@
     tools:context=".AlarmFragment">
 
     <GridView
+        android:id="@+id/alarm_elem_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="1"
-        android:text="Alarm" />
+        android:numColumns="1"/>
 
 </FrameLayout>

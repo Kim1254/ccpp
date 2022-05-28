@@ -1,64 +1,125 @@
 package com.gachon.ccpp;
 
+import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AlarmFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class AlarmFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public AlarmFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AlarmFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AlarmFragment newInstance(String param1, String param2) {
-        AlarmFragment fragment = new AlarmFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alarm, container, false);
+        View view = inflater.inflate(R.layout.fragment_alarm, container, false);
+
+        ArrayList<AlarmLink> list = new ArrayList<AlarmLink>();
+
+        // Write alarm parsing here
+        // requestAlarm(list) ... parseAlarm(data, list)
+
+        list.add(new AlarmLink("Test alarm 1", "This is announcement icon",
+                R.drawable.ic_announcement, R.color.gcc_liteblue,
+                "test_alarm1"));
+        list.add(new AlarmLink("Test alarm 2", "This is assignment icon",
+                R.drawable.ic_assignment, R.color.gcc_orange,
+                "test_alarm2"));
+
+        GridView grid = view.findViewById(R.id.alarm_elem_list);
+        grid.setAdapter(new AlarmAdapter(list));
+
+        return view;
+    }
+
+    public class AlarmLink {
+        public final String title;
+        public final String context;
+        public final int icon;
+        public final int color;
+        public final String link;
+
+        public AlarmLink(String title, String context, int icon, int color, String link) {
+            this.title = title;
+            this.context = context;
+            this.icon = icon;
+            this.color = color;
+            this.link = link;
+        }
+    }
+
+    private class AlarmAdapter extends BaseAdapter {
+        private final List<AlarmLink> list;
+
+        private AlarmAdapter(List<AlarmLink> list) {
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup parent) {
+            Context ctx = parent.getContext();
+            final AlarmLink alarm = (AlarmLink) getItem(i);
+
+            if (view == null) {
+                LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inf.inflate(R.layout.alarm_item, parent, false);
+            } else {
+                View newView = new View(ctx);
+                newView = (View) view;
+            }
+
+            ImageView img = view.findViewById(R.id.elem_alarm_img);
+            TextView tv = view.findViewById(R.id.elem_alarm_title);
+            TextView context = view.findViewById(R.id.elem_alarm_ctx);
+
+            if (alarm.icon != 0)
+                img.setImageResource(alarm.icon);
+            if (alarm.color != 0)
+                img.setImageTintList(ColorStateList.valueOf(
+                        ResourcesCompat.getColor(
+                                view.getResources(), alarm.color, null)));
+
+            tv.setText(alarm.title);
+            context.setText(alarm.context);
+
+            view.setOnClickListener(view_ -> {
+                Log.d("CCPP", "Alarm: " + alarm.link);
+            });
+
+            return view;
+        }
     }
 }

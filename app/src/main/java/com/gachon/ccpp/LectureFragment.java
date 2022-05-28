@@ -28,12 +28,12 @@ public class LectureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View thisView = inflater.inflate(R.layout.fragment_lecture, container, false);
+        View view = inflater.inflate(R.layout.fragment_lecture, container, false);
 
-        GridView grid = thisView.findViewById(R.id.lecture_list);
+        GridView grid = view.findViewById(R.id.lecture_list);
         grid.setAdapter(new LectureAdapter(lecture_list));
 
-        return thisView;
+        return view;
     }
 
     public static class Lecture {
@@ -96,22 +96,22 @@ public class LectureFragment extends Fragment {
             if (view == null) {
                 LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inf.inflate(R.layout.lecture_item, viewGroup, false);
-
-                TextView tv = view.findViewById(R.id.lec_name);
-                TextView cid = view.findViewById(R.id.lec_id);
-
-                if (lec.img_url != null) {
-                    ImageView iv = view.findViewById(R.id.lec_img);
-                    Glide.with(view).load(lec.img_url).into(iv);
-                    iv.setClipToOutline(true);
-                }
-
-                tv.setText(lec.name);
-                cid.setText(lec.id);
             } else {
                 View newView = new View(ctx);
                 newView = (View) view;
             }
+
+            TextView tv = view.findViewById(R.id.lec_name);
+            TextView cid = view.findViewById(R.id.lec_id);
+
+            if (lec.img_url != null) {
+                ImageView iv = view.findViewById(R.id.lec_img);
+                Glide.with(view).load(lec.img_url).into(iv);
+                iv.setClipToOutline(true);
+            }
+
+            tv.setText(lec.name);
+            cid.setText(lec.id);
 
             view.setOnClickListener(view_ -> {
                 startLecture(lec.name, lec.link);

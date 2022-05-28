@@ -24,9 +24,9 @@ public class ScheduleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View thisView = inflater.inflate(R.layout.fragment_schedule, container, false);
+        View view = inflater.inflate(R.layout.fragment_schedule, container, false);
 
-        MaterialCalendarView cal = thisView.findViewById(R.id.calendar);
+        MaterialCalendarView cal = view.findViewById(R.id.calendar);
         cal.setSelectionColor(
                 ResourcesCompat.getColor(getResources(), R.color.gcc_green, null));
         cal.setSelectedDate(CalendarDay.today());
@@ -38,7 +38,7 @@ public class ScheduleFragment extends Fragment {
                         ResourcesCompat.getColor(getResources(), R.color.gcc_orange, null))
         );
 
-        return thisView;
+        return view;
     }
 
     static class DateDecorator implements DayViewDecorator {
