@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".AlarmFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:numColumns="1"
         android:text="Alarm" />
 
 </FrameLayout>
