@@ -204,7 +204,7 @@ public class LectureActivity extends AppCompatActivity {
         if (li.size() != 0)
             weekly_list.setAdapter(new WeeklyCourseAdapter(li));
 
-        ArrayList<NotiElem> n_li = new ArrayList<NotiElem>();
+        ArrayList<NotiElem> n_li = new ArrayList<>();
 
         if (assign.num != 0)
             n_li.add(assign);
@@ -221,7 +221,7 @@ public class LectureActivity extends AppCompatActivity {
         }
 
         public WeeklyCourseAdapter(String title) {
-            this.list = new ArrayList<String>();
+            this.list = new ArrayList<>();
             list.add(title);
         }
 
@@ -379,6 +379,6 @@ public class LectureActivity extends AppCompatActivity {
     }
 
     public void NotiShortCut(String link) {
-
+        Log.d("CCPP", "Noti: " + link);
     }
 }

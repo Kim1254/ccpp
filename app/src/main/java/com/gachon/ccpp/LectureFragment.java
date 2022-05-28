@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class LectureFragment extends Fragment {
-    public final List<Lecture> lecture_list = Collections.synchronizedList(new ArrayList<Lecture>());
+    public final List<Lecture> lecture_list = Collections.synchronizedList(new ArrayList<>());
 
     @Nullable
     @Override
