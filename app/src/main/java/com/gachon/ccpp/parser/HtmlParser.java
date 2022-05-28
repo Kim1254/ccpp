@@ -23,7 +23,7 @@ public class HtmlParser {
     // Uri "user/user_edit.php"
     public ArrayList<String> getStudentInfo() {
         Elements selected = html.select( ".felement.fstatic");
-        ArrayList<String> data = new ArrayList<String>();
+        ArrayList<String> data = new ArrayList<>();
 
         for(Element e: selected)
             data.add(e.text());

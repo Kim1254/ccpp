@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
@@ -15,6 +16,8 @@ import com.gachon.ccpp.network.RetrofitClient;
 import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -110,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
                         ArrayList<ListForm> monthList = parser.getMonthList();
+
                         for (ListForm l : monthList)
                             requestDaySchedule(l.date, l.link);
                     } catch (Exception ignored) { }
@@ -130,10 +134,15 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
                         ArrayList<ListForm> dayList = parser.getDayList();
-                        for(ListForm l : dayList){
+
+                        for (ListForm l : dayList){
                             l.date = day;
                             scheduleList.add(l);
                         }
+
+                        Collections.sort(scheduleList, (f1, f2) -> {
+                            return Integer.valueOf(f1.date).compareTo(Integer.valueOf(f2.date));
+                        });
                     } catch (Exception ignored) { }
                 }
             }

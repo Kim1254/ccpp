@@ -1,5 +1,7 @@
 package com.gachon.ccpp.parser;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class ListForm implements Serializable {
@@ -15,5 +17,15 @@ public class ListForm implements Serializable {
         this.writer = writer;
         this.link = link;
         this.payload = payload;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "title: " + this.title
+                + "\ndate: " + this.date
+                + "\nwriter: " + this.writer
+                + "\nlink: " + this.link
+                + "\npayload: " + this.payload;
     }
 }
