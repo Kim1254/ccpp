@@ -30,4 +30,13 @@
 
     <string name="MainFragment_Lecture_Title">Lecture</string>
 
+    <string name="LectureActivity_notify">Notification</string>
+    <string name="LectureActivity_current">Current Week Course</string>
+    <string name="LectureActivity_weekly">All Week Course</string>
+
+    <string name="LectureActivity_elem_week">%1$sWeek</string>
+    <string name="LectureActivity_elem_period">%1$s %2$s - %3$s %4$s</string>
+
+    <string name="LectureActivity_assignment">Assignment</string>
+
 </resources>

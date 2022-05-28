@@ -18,4 +18,13 @@
     <color name="fancyAction">#ffff00</color>
     <color name="orange">#FF8A65</color>
     <color name="liteblue">#E1F5FE</color>
+
+    <color name="gcc_navy">#004E96</color>
+    <color name="gcc_darkernavy">#002A72</color>
+    <color name="gcc_green">#80C342</color>
+    <color name="gcc_orange">#FDAF17</color>
+    <color name="gcc_liteblue">#00B9F2</color>
+
+    <color name="gcc_navy_dark">#64B2FA</color>
+    <color name="gcc_darkernavy_dark">#648ED6</color>
 </resources>

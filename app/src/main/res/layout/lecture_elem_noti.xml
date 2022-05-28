@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="128dp"
+        android:layout_height="100dp"
+        android:padding="6dp">
+
+        <TextView
+            android:id="@+id/big_n_week"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/style_oval"
+            android:text="N"
+            android:textAlignment="center"
+            android:textSize="48sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ctx_n_week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/LectureActivity_elem_week"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/big_n_week" />
+
+        <TextView
+            android:id="@+id/num_notify"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/style_oval"
+            android:text="N"
+            android:paddingTop="4dp"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

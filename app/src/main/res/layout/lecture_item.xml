@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="96dp"
+        android:layout_height="132dp"
+        android:layout_gravity="center"
+        android:background="@drawable/style_roundrect">
+
+        <ImageView
+            android:id="@+id/lec_img"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/style_oval"
+            android:src="@drawable/baseline_account_circle_24"
+            app:layout_constraintBottom_toTopOf="@+id/textarea"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/textarea"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="vertical"
+            android:weightSum="100"
+            android:padding="4dp"
+            app:layout_constraintTop_toBottomOf="@id/lec_img"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" >
+
+            <TextView
+                android:id="@+id/lec_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="50"
+                android:text="Name"
+                android:gravity="center"
+                android:maxLines="1"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeTextType="uniform" />
+            <TextView
+                android:id="@+id/lec_id"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="50"
+                android:text="No"
+                android:gravity="center"
+                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

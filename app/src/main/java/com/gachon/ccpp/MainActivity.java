@@ -6,16 +6,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,13 +25,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.gachon.ccpp.api.UserManager;
+import com.gachon.ccpp.LectureFragment.Lecture;
 
 public class MainActivity extends AppCompatActivity {
     RetrofitClient retrofitClient;
     RetrofitAPI api;
 
-    private static final String baseUrl = "https://cyber.gachon.ac.kr";
-    private static final String keyword = "/user/edit.php";
+    private static final String baseUrl = "https://cyber.gachon.ac.kr/user/edit.php";
+    private static final String defaultImage = "https://cyber.gachon.ac.kr/theme/image.php/coursemosv2/core/1637637992/u/f1";
 
     LoadingDialog privateDialog;
 
@@ -44,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragManager;
     private FragmentTransaction transaction;
 
-    private LectureFragment Lecture;
+    private LectureFragment lectureFrag;
 
     private String sourceId;
 
@@ -63,9 +60,15 @@ public class MainActivity extends AppCompatActivity {
 
         privateDialog = new LoadingDialog(this);
 
-        Lecture = new LectureFragment();
+        lectureFrag = new LectureFragment();
 
         infoRequest();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        privateDialog.hide(); // ??
     }
 
     public void infoRequest() {
@@ -83,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
                             article = article.select("li.items");
 
                             String link = article.first().select("a").attr("abs:href");
-                            if (link.contains(baseUrl + keyword)) {
-                                connRequest(link.substring((baseUrl + keyword).length() + 4));
+                            if (link.contains(baseUrl)) {
+                                connRequest(link.substring((baseUrl).length() + 4));
                             }
                         }
                     } catch (Exception e) {
@@ -141,15 +144,29 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     try {
                         Document html = Jsoup.parse(response.body().string());
-                        Elements elements = html.select(".course-title h3");
+                        Elements elements = html.select(".course_box");
 
-                        JSONObject data = new JSONObject();
-                        for (Element e : elements)
-                            data.put(e.text(), "");
+                        lectureFrag.lecture_list.clear();
+                        for (Element e : elements) {
+                            String link = e.select("a").first().attr("href");
+                            String name = e.select(".course-title h3").first().text();
+                            String prof = e.select(".course-title p").first().text();
+                            String image = e.select(".course-image img").first().attr("src");
 
-                        Lecture.appendList(data.toString());
+                            if (name.substring(name.length() - 3).contentEquals("NEW"))
+                                name = name.substring(0, name.length() - 3);
+
+                            String id = name.substring(name.length() - 11);
+                            name = name.substring(0, name.length() - 12);
+
+                            if (image.contentEquals(defaultImage))
+                                lectureFrag.lecture_list.add(new Lecture(name, id, prof, link));
+                            else
+                                lectureFrag.lecture_list.add(new Lecture(name, id, prof, link, image));
+                        }
+
                         deployLecture();
-                    } catch (IOException | JSONException e) {
+                    } catch (IOException e) {
                         privateDialog.hide();
                         String text = getString(R.string.LoginActivity_LoginParseError, e.getMessage());
                         Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
@@ -176,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         fragManager = getSupportFragmentManager();
 
         transaction = fragManager.beginTransaction();
-        transaction.replace(R.id.fragLayout, Lecture).commitAllowingStateLoss();
+        transaction.replace(R.id.fragLayout, lectureFrag).commitAllowingStateLoss();
         privateDialog.hide();
     }
 }

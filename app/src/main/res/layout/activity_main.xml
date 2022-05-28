@@ -12,126 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/footer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.141"
-        tools:layout_editor_absoluteX="0dp">
-
-        <Button
-            android:id="@+id/btn1"
-            android:layout_width="410dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="35dp"
-            android:backgroundTint="@color/grey"
-            android:paddingLeft="10dp"
-            android:text="졸업작품1(11852_003)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.833"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="TextContrastCheck" />
-
-        <Button
-            android:id="@+id/btn2"
-            android:layout_width="410dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="35dp"
-
-            android:backgroundTint="@color/grey"
-            android:paddingLeft="10dp"
-            android:text="일본어1 (05310_004)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.165"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnTop" />
-
-        <Button
-            android:id="@+id/btn3"
-            android:layout_width="410dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="35dp"
-            android:backgroundTint="@color/grey"
-            android:paddingLeft="10dp"
-            android:text="모바일프로그래밍(14454_004)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.165"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn2" />
-
-        <Button
-            android:id="@+id/btn4"
-            android:layout_width="410dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="35dp"
-            android:backgroundTint="@color/grey"
-            android:paddingLeft="10dp"
-            android:text="경영학원론 (10375_001)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.165"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn3" />
-
-        <Button
-            android:id="@+id/btn5"
-            android:layout_width="410dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="35dp"
-            android:backgroundTint="@color/grey"
-            android:paddingLeft="10dp"
-            android:text="소프트웨어산업세미나 (13221_001)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.165"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn4" />
-
-        <Button
-            android:id="@+id/btn6"
-            android:layout_width="410dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="35dp"
-            android:backgroundTint="@color/grey"
-            android:paddingLeft="10dp"
-            android:text="소프트웨어공학 (10017_001)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.165"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn5" />
-
-        <Button
-            android:id="@+id/btn7"
-            android:layout_width="410dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="35dp"
-            android:backgroundTint="@color/grey"
-            android:paddingLeft="10dp"
-            android:text="데이터과학 (14457_001)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.165"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn6" />
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/border_bg"
+        android:background="@drawable/style_footer"
         android:orientation="horizontal">
 
         <Button
@@ -140,10 +31,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_lecture"
-            android:drawableTint="@color/purple_500"
+            android:paddingTop="12dp"
+            android:drawableTop="@drawable/ic_home"
             android:text="@string/MainActivity_Footer_Lecture"
-            android:textSize="10dp" />
+            android:textSize="11sp"
+            android:drawableTint="@color/gcc_navy"
+            android:textColor="@color/gcc_navy"/>
 
         <Button
             android:id="@+id/footer_schedule"
@@ -151,10 +44,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_schedule"
-            android:drawableTint="@color/purple_500"
+            android:paddingTop="12dp"
+            android:drawableTop="@drawable/ic_canlander"
             android:text="@string/MainActivity_Footer_Schedule"
-            android:textSize="10dp" />
+            android:textSize="11sp"
+            android:drawableTint="@color/gcc_navy"
+            android:textColor="@color/gcc_navy" />
 
         <Button
             android:id="@+id/footer_alarm"
@@ -162,10 +57,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_alarm"
-            android:drawableTint="@color/purple_500"
+            android:paddingTop="12dp"
+            android:drawableTop="@drawable/ic_bell"
             android:text="@string/MainActivity_Footer_Alarm"
-            android:textSize="10dp" />
+            android:textSize="11sp"
+            android:drawableTint="@color/gcc_navy"
+            android:textColor="@color/gcc_navy" />
 
         <Button
             android:id="@+id/footer_chat"
@@ -173,10 +70,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_chat"
-            android:drawableTint="@color/purple_500"
+            android:paddingTop="12dp"
+            android:drawableTop="@drawable/ic_comments"
             android:text="@string/MainActivity_Footer_Chat"
-            android:textSize="10dp" />
+            android:textSize="11sp"
+            android:drawableTint="@color/gcc_navy"
+            android:textColor="@color/gcc_navy" />
 
         <Button
             android:id="@+id/footer_setting"
@@ -184,9 +83,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:paddingTop="12dp"
             android:drawableTop="@drawable/ic_setting"
-            android:drawableTint="@color/purple_500"
             android:text="@string/MainActivity_Footer_Setting"
-            android:textSize="10dp" />
+            android:textSize="11sp"
+            android:drawableTint="@color/gcc_navy"
+            android:textColor="@color/gcc_navy" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

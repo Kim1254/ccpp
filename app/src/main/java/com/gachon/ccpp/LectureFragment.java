@@ -1,69 +1,123 @@
 package com.gachon.ccpp;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.gachon.ccpp.network.RetrofitAPI;
-import com.gachon.ccpp.network.RetrofitClient;
-import com.gachon.ccpp.util.DataHandler;
+import com.bumptech.glide.Glide;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
+import java.util.List;
 
 public class LectureFragment extends Fragment {
-    View thisView;
-
-    Set<String> lecture_list = Collections.synchronizedSet(new HashSet<String>());
+    public final List<Lecture> lecture_list = Collections.synchronizedList(new ArrayList<Lecture>());
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        thisView = inflater.inflate(R.layout.fragment_lecture, container, false);
-        LinearLayout layout = thisView.findViewById(R.id.lecture_list);
+        View thisView = inflater.inflate(R.layout.fragment_lecture, container, false);
 
-        for (String n : lecture_list) {
-            Button btn = new Button(getActivity());
-            btn.setText(n);
-            layout.addView(btn);
-        }
+        GridView grid = thisView.findViewById(R.id.lecture_list);
+        grid.setAdapter(new LectureAdapter(lecture_list));
+
         return thisView;
     }
 
-    public void appendList(String data) {
-        try {
-            JSONObject value = new JSONObject(data);
-            for (Iterator<String> s = value.keys(); s.hasNext();) {
-                lecture_list.add(s.next());
+    public static class Lecture {
+        public final String name;
+        public final String id;
+        public final String prof;
+        public final String link;
+        public String img_url = null;
+
+        public Lecture(String name, String id, String prof, String link) {
+            this.name = name;
+            this.id = id;
+            this.prof = prof;
+            this.link = link;
+        }
+
+        public Lecture(String name, String id, String prof, String link, String img_url) {
+            this.name = name;
+            this.id = id;
+            this.prof = prof;
+            this.link = link;
+            this.img_url = img_url;
+        }
+    }
+
+    public void startLecture(String title, String url) {
+        Intent it = new Intent(getActivity(), LectureActivity.class);
+        it.putExtra("title", title);
+        it.putExtra("link", url);
+        startActivity(it);
+    }
+
+    private class LectureAdapter extends BaseAdapter {
+        private final List<Lecture> list;
+
+        public LectureAdapter(List<Lecture> list) {
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return list.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            Context ctx = viewGroup.getContext();
+            final Lecture lec = (Lecture) getItem(i);
+
+            if (view == null) {
+                LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inf.inflate(R.layout.lecture_item, viewGroup, false);
+
+                TextView tv = view.findViewById(R.id.lec_name);
+                TextView cid = view.findViewById(R.id.lec_id);
+
+                if (lec.img_url != null) {
+                    ImageView iv = view.findViewById(R.id.lec_img);
+                    Glide.with(view).load(lec.img_url).into(iv);
+                    iv.setClipToOutline(true);
+                }
+
+                tv.setText(lec.name);
+                cid.setText(lec.id);
+            } else {
+                View newView = new View(ctx);
+                newView = (View) view;
             }
-        } catch (JSONException e) {
+
+            view.setOnClickListener(view_ -> {
+                startLecture(lec.name, lec.link);
+            });
+
+            return view;
         }
     }
 }

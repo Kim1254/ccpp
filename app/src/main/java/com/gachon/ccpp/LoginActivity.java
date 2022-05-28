@@ -17,11 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -77,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void tryGetCookie(String username, String password) {
         privateDialog.show("81217-locker.json", getString(R.string.LoadingDialog_TextLogin));
+
 
         Call<ResponseBody> login = api.login(username, password);
         login.enqueue(new Callback<ResponseBody>() {
