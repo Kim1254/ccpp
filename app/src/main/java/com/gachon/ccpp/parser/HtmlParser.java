@@ -11,6 +11,8 @@ import java.util.List;
 public class HtmlParser {
     private Document html;
 
+    public HtmlParser(){}
+
     public HtmlParser(Document document){
         this.html = document;
     }
@@ -101,7 +103,7 @@ public class HtmlParser {
     // CourseListForm
     //      announcement => 해당 주차 공지 -> 없는경우도 많음
     //      week => 주차
-    //      ListForm
+    //      ListForm.java
     //          date => file의 경우 용량/assignment의 경우 기간/Vod일 경우 기간, 영상길이
     //          writer => file/vod 구분 값이 없으면 assignment
     //          payload => 해당 항목 공지 -> 없는경우도 많음

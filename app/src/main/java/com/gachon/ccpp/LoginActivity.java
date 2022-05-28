@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
+import com.gachon.ccpp.parser.HtmlParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -102,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         Document html = Jsoup.parse(response.body().string());
                         Elements htmlLogin = html.select(".html_login");
+                        HtmlParser parser = new HtmlParser(html);
                         if (htmlLogin.size() == 0) {
                             String text = getString(R.string.LoginActivity_LoginSuccess,
                                     html.select(".user_department.hidden-xs").text());
@@ -112,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                             privateDialog.hide();
 
                             intent.putExtra("id", username.getText().toString());
+                            intent.putExtra("courseList",parser.getCourseList());
                             startActivity(intent);
                             finish();
                         } else {
