@@ -1,5 +1,6 @@
 package com.gachon.ccpp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,36 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.gachon.ccpp.network.RetrofitAPI;
-import com.gachon.ccpp.network.RetrofitClient;
-import com.gachon.ccpp.parser.HtmlParser;
+import com.bumptech.glide.Glide;
 import com.gachon.ccpp.parser.ListForm;
-import com.gachon.ccpp.util.DataHandler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LectureFragment extends Fragment {
     View thisView;
@@ -53,15 +34,75 @@ public class LectureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         thisView = inflater.inflate(R.layout.fragment_lecture, container, false);
-        TextView test = (TextView) thisView.findViewById(R.id.testText);
+
         Bundle bundle = getArguments();
         courseList = (ArrayList<ListForm>) bundle.getSerializable("courseList");
-        for(ListForm l : courseList){
-            test.append(l.title+"\n");
-            test.append(l.writer+"\n");
-            test.append(l.link+"\n\n");
-        }
+
+        GridView grid = thisView.findViewById(R.id.lecture_list);
+        grid.setAdapter(new LectureAdapter(courseList));
+
         return thisView;
     }
 
+    public void startLecture(String title, String url) {
+        Intent it = new Intent(getActivity(), LectureActivity.class);
+        it.putExtra("title", title);
+        it.putExtra("link", url);
+        startActivity(it);
+    }
+
+    private class LectureAdapter extends BaseAdapter {
+        private final List<ListForm> list;
+
+        public LectureAdapter(List<ListForm> list) {
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return list.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            Context ctx = viewGroup.getContext();
+            final ListForm form = (ListForm) getItem(i);
+
+            if (view == null) {
+                LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inf.inflate(R.layout.lecture_item, viewGroup, false);
+            } else {
+                View newView = new View(ctx);
+                newView = (View) view;
+            }
+
+            TextView tv = view.findViewById(R.id.lec_name);
+            TextView cid = view.findViewById(R.id.lec_id);
+
+            if (form.image != null) {
+                ImageView iv = view.findViewById(R.id.lec_img);
+                Glide.with(view).load(form.image).into(iv);
+                iv.setClipToOutline(true);
+            }
+
+            tv.setText(form.title);
+            cid.setText(form.writer);
+
+            view.setOnClickListener(view_ -> {
+                startLecture(form.title, form.link);
+            });
+
+            return view;
+        }
+    }
 }

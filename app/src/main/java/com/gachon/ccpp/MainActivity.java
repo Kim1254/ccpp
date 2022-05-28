@@ -63,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         sourceId = intent.getStringExtra("id");
+
         bundle = new Bundle();
-        bundle.putSerializable("courseList",intent.getSerializableExtra("courseList"));
+        bundle.putSerializable("courseList", intent.getSerializableExtra("courseList"));
 
         getSupportActionBar().hide();
 
@@ -84,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
         lecture.setArguments(bundle);
 
-
         transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragLayout, lecture).commit();
 
@@ -98,39 +98,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button scheduleButton = findViewById(R.id.footer_schedule);
-        scheduleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragLayout, schedule).commit();
-            }
+        scheduleButton.setOnClickListener(view -> {
+            transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragLayout, schedule).commit();
         });
 
         Button alarmButton = findViewById(R.id.footer_alarm);
-        alarmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragLayout, alarm).commit();
-            }
+        alarmButton.setOnClickListener(view -> {
+            transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragLayout, alarm).commit();
         });
 
         Button chatButton = findViewById(R.id.footer_chat);
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragLayout, chat).commit();
-            }
+        chatButton.setOnClickListener(view -> {
+            transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragLayout, chat).commit();
         });
 
         Button settingButton = findViewById(R.id.footer_setting);
-        settingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragLayout, setting).commit();
-            }
+        settingButton.setOnClickListener( view -> {
+            transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragLayout, setting).commit();
         });
     }
 
@@ -146,12 +134,11 @@ public class MainActivity extends AppCompatActivity {
                         parser.setHtml(html);
                         int studentId = Integer.parseInt(parser.getStudentInfo().get(0));
                         makeConnection(studentId);
-                    } catch (Exception e) {
-                    }
+                    } catch (Exception ignored) { }
                 }
             }
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
         privateDialog.hide();
@@ -160,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     public void makeConnection(int id) {
         userManager = new UserManager(sourceId, String.valueOf(id));
     }
+
     public void courseListRequest() {
         Call<ResponseBody> connect = api.getUri("");
         connect.enqueue(new Callback<ResponseBody>() {
@@ -169,12 +157,11 @@ public class MainActivity extends AppCompatActivity {
                         HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
                         ArrayList<ListForm> courseList = parser.getCourseList();
                         bundle.putSerializable("courseList", courseList);
-                    } catch (Exception e) {
-                    }
+                    } catch (Exception ignored) { }
                 }
             }
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Toast.makeText(getApplicationContext(),"fail",Toast.LENGTH_LONG).show();
             }
         });

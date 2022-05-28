@@ -68,12 +68,15 @@ public class HtmlParser {
     //writer => 교수이름
     public ArrayList<ListForm> getCourseList(){
         Elements selected = html.select( ".course_lists .course_box");
-        ArrayList<ListForm> data = new ArrayList<ListForm>();
-        for(Element e: selected){
+        ArrayList<ListForm> data = new ArrayList<>();
+        for (Element e: selected){
             data.add(new ListForm(
                     e.select(".course-title h3").text(),
-                    "",e.select(".prof").text(),e.select(".course_link").attr("href"),
-                    ""));
+                    "",
+                    e.select(".prof").text(),
+                    e.select(".course_link").attr("href"),
+                    "",
+                    e.select(".course-image img").attr("src")));
         }
         return data;
     }
@@ -120,7 +123,8 @@ public class HtmlParser {
                         i.select(".displayoptions").text(),
                         i.select( ".accesshide").text(),
                         i.select("a").attr("href"),
-                        i.select( ".contentafterlink").text()));
+                        i.select( ".contentafterlink").text(),
+                        null));
             }
             data.add(new CourseListFrom(
                     e.select(".contentwithoutlink").text(),
@@ -177,7 +181,8 @@ public class HtmlParser {
                         row.get(3).text(),
                         row.get(2).text(),
                         row.get(1).select("a").attr("href"),
-                        row.get(0).text()));
+                        row.get(0).text(),
+                        null));
             }
         }
         return data;
@@ -208,7 +213,8 @@ public class HtmlParser {
                     e.select(".date").text(),
                     e.select(".writer").text(),
                     e.select("a").attr("href"),
-                    e.select(".preface").text()));
+                    e.select(".preface").text(),
+                    null));
         }
         return data;
     }
@@ -232,7 +238,8 @@ public class HtmlParser {
                     e.select(".timeago").text(),
                     title.substring(0,title.length()-2),
                     e.select("a").attr("href"),
-                    sectionname));
+                    sectionname,
+                    null));
         }
         return data;
     }
