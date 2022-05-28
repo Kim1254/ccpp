@@ -29,6 +29,10 @@
     <string name="LoadingDialog_TextLoading">로딩 중…</string>
 
     <string name="MainFragment_Lecture_Title">강의</string>
+    <string name="MainFragment_Schedule_Title">일정</string>
+    <string name="MainFragment_Alarm_Title">알림</string>
+    <string name="MainFragment_Chat_Title">채팅</string>
+    <string name="MainFragment_Setting_Title">설정</string>
 
     <string name="LectureActivity_notify">알림</string>
     <string name="LectureActivity_current">이번 주 강의</string>

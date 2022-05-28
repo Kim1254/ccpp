@@ -29,6 +29,10 @@
     <string name="LoadingDialog_TextLoading">Loading…</string>
 
     <string name="MainFragment_Lecture_Title">Lecture</string>
+    <string name="MainFragment_Schedule_Title">Schedule</string>
+    <string name="MainFragment_Alarm_Title">Alarm</string>
+    <string name="MainFragment_Chat_Title">Chat</string>
+    <string name="MainFragment_Setting_Title">Setting</string>
 
     <string name="LectureActivity_notify">Notification</string>
     <string name="LectureActivity_current">Current Week Course</string>

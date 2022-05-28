@@ -2,11 +2,13 @@ package com.gachon.ccpp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.gachon.ccpp.network.RetrofitAPI;
@@ -42,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     private FragmentTransaction transaction;
 
     private LectureFragment lectureFrag;
+    private ScheduleFragment scheduleFrag;
+    private AlarmFragment alarmFrag;
+    private ChatFragment chatFrag;
+    private SettingFragment settingFrag;
 
     private String sourceId;
 
@@ -61,8 +67,38 @@ public class MainActivity extends AppCompatActivity {
         privateDialog = new LoadingDialog(this);
 
         lectureFrag = new LectureFragment();
+        scheduleFrag = new ScheduleFragment();
+        alarmFrag = new AlarmFragment();
+        chatFrag = new ChatFragment();
+        settingFrag = new SettingFragment();
 
         infoRequest();
+
+        Button btnLecture = findViewById(R.id.footer_lecture);
+        Button btnSchedule = findViewById(R.id.footer_schedule);
+        Button btnAlarm = findViewById(R.id.footer_alarm);
+        Button btnChat = findViewById(R.id.footer_chat);
+        Button btnSetting = findViewById(R.id.footer_setting);
+
+        btnLecture.setOnClickListener(view -> {
+            homeRequest();
+        });
+
+        btnSchedule.setOnClickListener(view -> {
+            scheduleRequest();
+        });
+
+        btnAlarm.setOnClickListener(view -> {
+            alarmRequest();
+        });
+
+        btnChat.setOnClickListener(view -> {
+            chatRequest();
+        });
+
+        btnSetting.setOnClickListener(view -> {
+            setttingRequest();
+        });
     }
 
     @Override
@@ -115,13 +151,10 @@ public class MainActivity extends AppCompatActivity {
                                     int num = Integer.parseInt(e.text());
                                     makeConnection(num);
                                     break;
-                                } catch (NumberFormatException exception) {
-                                    continue;
-                                }
+                                } catch (NumberFormatException ignored) { }
                             }
                         }
-                    } catch (IOException e) {
-                    }
+                    } catch (IOException ignored) { }
                 }
             }
 
@@ -165,11 +198,13 @@ public class MainActivity extends AppCompatActivity {
                                 lectureFrag.lecture_list.add(new Lecture(name, id, prof, link, image));
                         }
 
-                        deployLecture();
+                        deployFragment(R.string.MainFragment_Lecture_Title,
+                                lectureFrag);
                     } catch (IOException e) {
-                        privateDialog.hide();
                         String text = getString(R.string.LoginActivity_LoginParseError, e.getMessage());
                         Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+                    } finally {
+                        privateDialog.hide();
                     }
                 } else {
                     privateDialog.hide();
@@ -186,14 +221,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void deployLecture() {
-        getSupportActionBar().setTitle(R.string.MainFragment_Lecture_Title);
+    public void scheduleRequest() {
+        deployFragment(R.string.MainFragment_Schedule_Title,
+                scheduleFrag);
+    }
+
+    public void alarmRequest() {
+        deployFragment(R.string.MainFragment_Alarm_Title,
+                alarmFrag);
+    }
+
+    public void chatRequest() {
+        deployFragment(R.string.MainFragment_Chat_Title,
+                chatFrag);
+    }
+
+    public void setttingRequest() {
+        deployFragment(R.string.MainFragment_Setting_Title,
+                settingFrag);
+    }
+
+    public void deployFragment(int title, Fragment fragment) {
+        getSupportActionBar().setTitle(title);
         getSupportActionBar().show();
 
         fragManager = getSupportFragmentManager();
 
         transaction = fragManager.beginTransaction();
-        transaction.replace(R.id.fragLayout, lectureFrag).commitAllowingStateLoss();
-        privateDialog.hide();
+        transaction.replace(R.id.fragLayout, fragment).commitAllowingStateLoss();
     }
 }

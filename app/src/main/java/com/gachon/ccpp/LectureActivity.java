@@ -90,24 +90,40 @@ public class LectureActivity extends AppCompatActivity {
         int i = 0;
         Elements contents = section.first().select(".activity");
         for (Element content : contents) {
-            String link = content.select(".activityinstance a").first().attr("href");
+            if (content.select(".activityinstance a").first() == null) { // label
+                Elements elem = contents.select("p");
+                if (elem.first() == null)
+                    continue;
 
-            Element instance_name = content.select(".instancename").first();
+                String name = elem.first().text();
 
-            if (instance_name == null)
-                continue;
+                if (name.trim().length() == 0) // blank
+                    continue;
 
-            String name = instance_name.text();
-            if (instance_name.select(".accesshide").first() != null) {
-                String hide = instance_name.select(".accesshide").first().text();
-                name = name.substring(0, name.length() - hide.length());
+                JSONObject json = new JSONObject();
+                json.put("name", name);
+                json.put("class", content.attr("class").substring(9));
+                head.put("item" + ++i, json.toString());
+            } else {
+                String link = content.select(".activityinstance a").first().attr("href");
+
+                Element instance_name = content.select(".instancename").first();
+
+                if (instance_name == null)
+                    continue;
+
+                String name = instance_name.text();
+                if (instance_name.select(".accesshide").first() != null) {
+                    String hide = instance_name.select(".accesshide").first().text();
+                    name = name.substring(0, name.length() - hide.length());
+                }
+
+                JSONObject elem = new JSONObject();
+                elem.put("name", name);
+                elem.put("class", content.attr("class").substring(9));
+                elem.put("link", link);
+                head.put("item" + ++i, elem.toString());
             }
-
-            JSONObject elem = new JSONObject();
-            elem.put("name", name);
-            elem.put("class", content.attr("class").substring(9));
-            elem.put("link", link);
-            head.put("item" + ++i, elem.toString());
         }
         return head.toString();
     }
