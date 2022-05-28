@@ -43,4 +43,6 @@
 
     <string name="LectureActivity_assignment">Assignment</string>
 
+    <string name="ChatActivity_submit">Submit</string>
+
 </resources>

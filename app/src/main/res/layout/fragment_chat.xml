@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ChatFragment">
 
-    <TextView
+    <GridView
+        android:id="@+id/chat_elem_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Chat" />
+        android:numColumns="1"/>
 
 </FrameLayout>

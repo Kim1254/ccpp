@@ -32,32 +32,32 @@ public class AlarmFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
 
-        ArrayList<AlarmLink> list = new ArrayList<AlarmLink>();
+        ArrayList<ItemFormat> list = new ArrayList<ItemFormat>();
 
         // Write alarm parsing here
         // requestAlarm(list) ... parseAlarm(data, list)
 
-        list.add(new AlarmLink("Test alarm 1", "This is announcement icon",
+        list.add(new ItemFormat("Test alarm 1", "This is announcement icon",
                 R.drawable.ic_announcement, R.color.gcc_liteblue,
                 "test_alarm1"));
-        list.add(new AlarmLink("Test alarm 2", "This is assignment icon",
+        list.add(new ItemFormat("Test alarm 2", "This is assignment icon",
                 R.drawable.ic_assignment, R.color.gcc_orange,
                 "test_alarm2"));
 
         GridView grid = view.findViewById(R.id.alarm_elem_list);
-        grid.setAdapter(new AlarmAdapter(list));
+        grid.setAdapter(new ItemAdapter(list));
 
         return view;
     }
 
-    public class AlarmLink {
+    public static class ItemFormat {
         public final String title;
         public final String context;
         public final int icon;
         public final int color;
         public final String link;
 
-        public AlarmLink(String title, String context, int icon, int color, String link) {
+        public ItemFormat(String title, String context, int icon, int color, String link) {
             this.title = title;
             this.context = context;
             this.icon = icon;
@@ -66,10 +66,10 @@ public class AlarmFragment extends Fragment {
         }
     }
 
-    private class AlarmAdapter extends BaseAdapter {
-        private final List<AlarmLink> list;
+    private static class ItemAdapter extends BaseAdapter {
+        private final List<ItemFormat> list;
 
-        private AlarmAdapter(List<AlarmLink> list) {
+        public ItemAdapter(List<ItemFormat> list) {
             this.list = list;
         }
 
@@ -91,7 +91,7 @@ public class AlarmFragment extends Fragment {
         @Override
         public View getView(int i, View view, ViewGroup parent) {
             Context ctx = parent.getContext();
-            final AlarmLink alarm = (AlarmLink) getItem(i);
+            final ItemFormat item = (ItemFormat) getItem(i);
 
             if (view == null) {
                 LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -105,21 +105,25 @@ public class AlarmFragment extends Fragment {
             TextView tv = view.findViewById(R.id.elem_alarm_title);
             TextView context = view.findViewById(R.id.elem_alarm_ctx);
 
-            if (alarm.icon != 0)
-                img.setImageResource(alarm.icon);
-            if (alarm.color != 0)
+            if (item.icon != 0)
+                img.setImageResource(item.icon);
+            if (item.color != 0)
                 img.setImageTintList(ColorStateList.valueOf(
                         ResourcesCompat.getColor(
-                                view.getResources(), alarm.color, null)));
+                                view.getResources(), item.color, null)));
 
-            tv.setText(alarm.title);
-            context.setText(alarm.context);
+            tv.setText(item.title);
+            context.setText(item.context);
 
             view.setOnClickListener(view_ -> {
-                Log.d("CCPP", "Alarm: " + alarm.link);
+                onClick(item);
             });
 
             return view;
+        }
+
+        public void onClick(ItemFormat item) {
+            Log.d("CCPP", "Alarm: " + item.link);
         }
     }
 }
