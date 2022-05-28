@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
+import com.gachon.ccpp.parser.HtmlParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,7 +32,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     RetrofitClient retrofitClient;
     RetrofitAPI api;
-    EditText username,password;
+    EditText username, password;
     CheckBox autoLogin;
 
     TextView description;
@@ -75,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
     public void tryGetCookie(String username, String password) {
         privateDialog.show("81217-locker.json", getString(R.string.LoadingDialog_TextLogin));
 
-
         Call<ResponseBody> login = api.login(username, password);
         login.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -102,6 +102,8 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         Document html = Jsoup.parse(response.body().string());
                         Elements htmlLogin = html.select(".html_login");
+                        HtmlParser parser = new HtmlParser(html);
+
                         if (htmlLogin.size() == 0) {
                             String text = getString(R.string.LoginActivity_LoginSuccess,
                                     html.select(".user_department.hidden-xs").text());
@@ -112,6 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                             privateDialog.hide();
 
                             intent.putExtra("id", username.getText().toString());
+                            intent.putExtra("courseList", parser.getCourseList());
+
                             startActivity(intent);
                             finish();
                         } else {

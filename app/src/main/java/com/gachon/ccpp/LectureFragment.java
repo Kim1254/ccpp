@@ -16,47 +16,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gachon.ccpp.parser.ListForm;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class LectureFragment extends Fragment {
-    public final List<Lecture> lecture_list = Collections.synchronizedList(new ArrayList<>());
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lecture, container, false);
 
+        Bundle bundle = getArguments();
+        ArrayList<ListForm> courseList = (ArrayList<ListForm>) bundle.getSerializable("courseList");
+
         GridView grid = view.findViewById(R.id.lecture_list);
-        grid.setAdapter(new LectureAdapter(lecture_list));
+        grid.setAdapter(new LectureAdapter(courseList));
 
         return view;
-    }
-
-    public static class Lecture {
-        public final String name;
-        public final String id;
-        public final String prof;
-        public final String link;
-        public String img_url = null;
-
-        public Lecture(String name, String id, String prof, String link) {
-            this.name = name;
-            this.id = id;
-            this.prof = prof;
-            this.link = link;
-        }
-
-        public Lecture(String name, String id, String prof, String link, String img_url) {
-            this.name = name;
-            this.id = id;
-            this.prof = prof;
-            this.link = link;
-            this.img_url = img_url;
-        }
     }
 
     public void startLecture(String title, String url) {
@@ -67,9 +45,9 @@ public class LectureFragment extends Fragment {
     }
 
     private class LectureAdapter extends BaseAdapter {
-        private final List<Lecture> list;
+        private final List<ListForm> list;
 
-        public LectureAdapter(List<Lecture> list) {
+        public LectureAdapter(List<ListForm> list) {
             this.list = list;
         }
 
@@ -91,7 +69,7 @@ public class LectureFragment extends Fragment {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             Context ctx = viewGroup.getContext();
-            final Lecture lec = (Lecture) getItem(i);
+            final ListForm form = (ListForm) getItem(i);
 
             if (view == null) {
                 LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -104,17 +82,17 @@ public class LectureFragment extends Fragment {
             TextView tv = view.findViewById(R.id.lec_name);
             TextView cid = view.findViewById(R.id.lec_id);
 
-            if (lec.img_url != null) {
+            if (!form.payload.contentEquals("")) {
                 ImageView iv = view.findViewById(R.id.lec_img);
-                Glide.with(view).load(lec.img_url).into(iv);
+                Glide.with(view).load(form.payload).into(iv);
                 iv.setClipToOutline(true);
             }
 
-            tv.setText(lec.name);
-            cid.setText(lec.id);
+            tv.setText(form.title);
+            cid.setText(form.writer);
 
             view.setOnClickListener(view_ -> {
-                startLecture(lec.name, lec.link);
+                startLecture(form.title, form.link);
             });
 
             return view;
