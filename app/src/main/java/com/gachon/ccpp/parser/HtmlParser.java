@@ -3,10 +3,10 @@ package com.gachon.ccpp.parser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HtmlParser {
     private Document html;
@@ -29,6 +29,47 @@ public class HtmlParser {
         }
         data.remove(2);
         data.remove(2);
+        return data;
+    }
+    //달력
+    //Uri "calendar/view.php?view=month"
+    //얘를 이용해서 링크를 얻어오고 링크마다 html을 받아와 다시 파싱해야함
+    // date - 날짜
+    public  ArrayList<ListForm> getMonthList(){
+        Elements selected = html.select( ".duration .day a");
+        ArrayList<ListForm> data = new ArrayList<ListForm>();
+        for(Element e: selected){
+            data.add(new ListForm(
+                    "",
+                    e.text(),
+                    "",
+                    e.attr("href"),
+                    ""));
+        }
+        return data;
+    }
+
+    //title - 과제이름
+    //writer - 강의이름
+    //payload - 설명
+    public  ArrayList<ListForm> getDayList(){
+        Elements selected = html.select( ".eventlist .event");
+        ArrayList<ListForm> data = new ArrayList<ListForm>();
+        for(Element e: selected){
+            String a = e.select("img").attr("title");
+            if(a.compareTo("과제")!=0)continue;
+            Elements temp = e.select(".description");
+            temp.select("br").before("\\n");
+            temp.select("p").before("\\n");
+            String text = temp.html().replaceAll("\\\\n","\n");
+            text = Jsoup.clean(text,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replaceAll("&nbsp;"," ");
+            data.add(new ListForm(
+                    e.select(".referer a").text(),
+                    "",
+                    e.select(".course a").text(),
+                    e.select(".referer a").attr("href"),
+                    text));
+        }
         return data;
     }
 

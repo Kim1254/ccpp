@@ -20,6 +20,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -28,6 +30,8 @@ import retrofit2.Response;
 
 import com.gachon.ccpp.api.UserManager;
 import com.gachon.ccpp.LectureFragment.Lecture;
+import com.gachon.ccpp.parser.HtmlParser;
+import com.gachon.ccpp.parser.ListForm;
 
 public class MainActivity extends AppCompatActivity {
     RetrofitClient retrofitClient;
@@ -49,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private ChatFragment chatFrag;
     private SettingFragment settingFrag;
 
+    public ArrayList<ListForm> scheduleList;
+
     private String sourceId;
 
     @Override
@@ -66,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         privateDialog = new LoadingDialog(this);
 
+        scheduleList = new ArrayList<>();
+
         lectureFrag = new LectureFragment();
         scheduleFrag = new ScheduleFragment();
         alarmFrag = new AlarmFragment();
@@ -73,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         settingFrag = new SettingFragment();
 
         infoRequest();
+        requestSchedule();
 
         Button btnLecture = findViewById(R.id.footer_lecture);
         Button btnSchedule = findViewById(R.id.footer_schedule);
@@ -105,6 +114,51 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         privateDialog.hide(); // ??
+    }
+
+    //일정이 있는날만 뽑아와서 requestDaySchedule 호출
+    public void requestSchedule() {
+        Call<ResponseBody> connect = api.getUri("calendar/view.php?view=month");
+        connect.enqueue(new Callback<ResponseBody>() {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
+                        ArrayList<ListForm> monthList = parser.getMonthList();
+                        for(ListForm l : monthList){
+                            requestDaySchedule(l.date,l.link);
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            }
+        });
+    }
+
+    //일정이 있는날 과제만 파싱해서 가져옴
+    public void requestDaySchedule(String day, String link) {
+        Call<ResponseBody> connect = api.getUri(link);
+        connect.enqueue(new Callback<ResponseBody>() {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
+                        ArrayList<ListForm> dayList = parser.getDayList();
+                        for(ListForm l : dayList){
+                            l.date = day;
+                            scheduleList.add(l);
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            }
+        });
     }
 
     public void infoRequest() {
