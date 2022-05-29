@@ -3,6 +3,7 @@
     package="com.gachon.ccpp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,6 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Ccpp">
+        <activity
+            android:name=".AnnouncementActivity"
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />

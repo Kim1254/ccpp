@@ -18,6 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
+import com.gachon.ccpp.parser.ContentForm;
+import com.gachon.ccpp.parser.HtmlParser;
+import com.gachon.ccpp.parser.ListForm;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +31,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -50,6 +54,7 @@ public class LectureActivity extends AppCompatActivity {
 
     private static final String baseUrl = "https://cyber.gachon.ac.kr/course/view.php";
 
+    private ArrayList<ContentForm> announcementContent;
     private final String[] week_patterns = {
             "(\\d+)Week \\[(\\d+) (\\p{Alpha}+) - (\\d+) (\\p{Alpha}+)\\]",
             "(\\d+)주차 \\[(\\d+)월(\\d+)일 - (\\d+)월(\\d+)일\\]"
@@ -67,6 +72,7 @@ public class LectureActivity extends AppCompatActivity {
         current_list = findViewById(R.id.element_list_current);
         weekly_list = findViewById(R.id.element_list_weekly);
 
+        announcementContent = new ArrayList<>();
         Intent it = getIntent();
         if (it != null) {
             if (it.getStringExtra("title") != null)
@@ -135,6 +141,11 @@ public class LectureActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     try {
                         Document html = Jsoup.parse(response.body().string());
+
+                        HtmlParser parser = new HtmlParser(html);
+                        String link = parser.getClassAnnouncementLink();
+                        requestAnnouncementsLink(link);
+
                         Element article = html.select(".section.main.clearfix.current").first();
 
                         data = new JSONObject();
@@ -372,13 +383,52 @@ public class LectureActivity extends AppCompatActivity {
             num_noti.setText("" + elem.num);
 
             view.setOnClickListener(view_ -> {
-                NotiShortCut(elem.link);
+                Intent intent = new Intent(getApplicationContext(),AnnouncementActivity.class);
+                intent.putExtra("list",announcementContent);
+                startActivity(intent);
             });
             return view;
         }
     }
 
-    public void NotiShortCut(String link) {
-        Log.d("CCPP", "Noti: " + link);
+    public void requestAnnouncementsLink(String link) {
+        Call<ResponseBody> connect = MainActivity.api.getUri(link+"&ls=100");
+        connect.enqueue(new Callback<ResponseBody>() {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
+                        ArrayList<ListForm> announcementLink = parser.getCourseAnnouncementList();
+                        for(ListForm l :announcementLink){
+                            requestAnnouncements(l.link,new ContentForm("","","","",l.payload));
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            }
+        });
+    }
+
+    public void requestAnnouncements(String link,ContentForm content) {
+        Call<ResponseBody> connect = MainActivity.api.getUri(link);
+        connect.enqueue(new Callback<ResponseBody>() {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
+                        ContentForm data = parser.getAnnouncementContent();
+                        data.payload = content.payload;
+                        announcementContent.add(data);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            }
+        });
     }
 }

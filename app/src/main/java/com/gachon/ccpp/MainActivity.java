@@ -29,8 +29,8 @@ import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;
 
 public class MainActivity extends AppCompatActivity {
-    RetrofitClient retrofitClient;
-    RetrofitAPI api;
+    public static RetrofitClient retrofitClient;
+    public static RetrofitAPI api;
 
     HtmlParser parser;
 
