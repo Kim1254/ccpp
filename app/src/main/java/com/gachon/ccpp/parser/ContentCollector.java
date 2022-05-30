@@ -36,14 +36,13 @@ public class ContentCollector {
     RetrofitClient retrofitClient;
     RetrofitAPI api;
 
-    public enum collectionState { FAILURE, BEGIN, LECTURE_LIST, LECTURE_ACTIVITY, LECTURE_CONTEXT };
+    public enum collectionState { FAILURE, BEGIN, LECTURE_LIST, LECTURE_ACTIVITY };
 
     private JSONObject head = null;
-    private JSONObject context = null;
 
     private final Context ctx;
 
-    collectionState state_head = collectionState.FAILURE;
+    private collectionState state_head = collectionState.FAILURE;
 
     public ContentCollector(Context ctx) {
         retrofitClient = RetrofitClient.getInstance();
@@ -51,12 +50,8 @@ public class ContentCollector {
 
         this.ctx = ctx;
 
-        if (!loadData()) {
-            Log.d("CCPP", "launch failed: refresh");
+        if (!loadData())
             refresh();
-        } else {
-            Log.d("CCPP", "load succeed: " + head.toString().length() + ", " + context.toString().length());
-        }
     }
 
     public void refresh() {
@@ -83,15 +78,6 @@ public class ContentCollector {
         return prev;
     }
 
-    public String getContext(String path) {
-        try {
-            return context.getString(path);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private void saveData() {
         try {
             FileOutputStream fos = ctx.openFileOutput("_data",
@@ -100,9 +86,6 @@ public class ContentCollector {
 
             dos.writeUTF(state_head.toString());
             dos.writeUTF(head.toString());
-
-            if (state_head.equals(collectionState.LECTURE_CONTEXT))
-                dos.writeUTF(context.toString());
 
             dos.flush();
             dos.close();
@@ -116,9 +99,6 @@ public class ContentCollector {
 
             state_head = collectionState.valueOf(dis.readUTF());
             head = new JSONObject(dis.readUTF());
-
-            if (state_head.equals(collectionState.LECTURE_CONTEXT))
-                context = new JSONObject(dis.readUTF());
 
             return true;
         } catch (Exception e) { e.printStackTrace(); }
@@ -147,7 +127,6 @@ public class ContentCollector {
 
         public void updateContext() {
             if (state_head.compareTo(state_current) < 0) {
-                context = newContext;
                 state_head = state_current;
                 saveData();
             }
@@ -205,22 +184,6 @@ public class ContentCollector {
 
             state_current = collectionState.LECTURE_ACTIVITY;
             updateHead();
-
-            try {
-                requestContext();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.d("CCPP", "exception", e);
-            }
-
-            while (state_current != collectionState.FAILURE) {
-                if (num_request == 0)
-                    break;
-            }
-
-            state_current = collectionState.LECTURE_CONTEXT;
-            updateContext();
-            Log.d("CCPP", "Context load ended.");
         }
 
         private void requestActivity() throws JSONException {
@@ -390,89 +353,27 @@ public class ContentCollector {
                                 continue;
 
                             String path = key + "\\/*activity\\/*" + child_key + "\\/*" + child_key2;
-                            requestAssContext(path, child2.getString("link"));
+                            //requestAssContext(path, child2.getString("link"));
                         }
                     }
                 }
 
                 if (lec.has("announcement")) {
                     JSONObject announcement = new JSONObject(lec.getString("announcement"));
-                    Log.d("CCPP", "ann length: " + announcement.toString().length());
                     for (Iterator<String> iter = announcement.keys(); iter.hasNext(); ) {
                         String child_key = iter.next();
                         JSONObject child = new JSONObject(announcement.getString(child_key));
-                        Log.d("CCPP", child_key + ": " + announcement.getString(child_key));
 
                         if (!child.has("link"))
                             continue;
 
                         String path = key + "\\/*announcement\\/*" + child_key;
-                        Log.d("CCPP", "announcement: " + path + ", " + child.getString("link"));
-                        requestAnnContext(path, child.getString("link"));
+                        //requestAnnContext(path, child.getString("link"));
                     }
                 }
             }
 
             Log.d("CCPP", "request ends.");
-        }
-
-        private void requestAnnContext(String path, String link) {
-            num_request++;
-            api.getUri(link).enqueue(new Callback<ResponseBody>() {
-                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                    if (response.isSuccessful()) {
-                        try {
-                            HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
-                            ContentForm data = parser.getAnnouncementContent();
-                            JSONObject json = new JSONObject();
-                            // json.put("title", data.title); // already has same values on head
-                            json.put("date", data.date);
-                            json.put("writer", data.writer);
-                            json.put("content", data.content);
-                            json.put("hit", data.payload);
-
-                            synchronized (newContext) {
-                                newContext.put(path, json);
-                            }
-                        } catch (Exception ignored) {
-                        } finally { num_request--; }
-                    }
-                }
-                @Override
-                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    num_request--;
-                }
-            });
-        }
-
-        private void requestAssContext(String path, String link) {
-            num_request++;
-            api.getUri(link).enqueue(new Callback<ResponseBody>() {
-                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                    if (response.isSuccessful()) {
-                        try {
-                            HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
-                            ContentForm data = parser.getAssignmentContent();
-                            JSONObject json = new JSONObject();
-
-                            json.put("date", data.date);
-                            if (!data.content.contentEquals("")) {
-                                json.put("content", data.content);
-                                json.put("link", data.payload);
-                            }
-
-                            synchronized (newContext) {
-                                newContext.put(path, json);
-                            }
-                        } catch (Exception ignored) {
-                        } finally { num_request--; }
-                    }
-                }
-                @Override
-                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    num_request--;
-                }
-            });
         }
     }
 }
