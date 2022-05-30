@@ -117,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                             intent.putExtra("courseList", parser.getCourseList());
 
                             startActivity(intent);
+                            privateDialog.dismiss();
                             finish();
                         } else {
                             privateDialog.hide();
