@@ -48,7 +48,7 @@ public class LectureActivity extends AppCompatActivity {
 
     private JSONObject data = null;
 
-    private static final String baseUrl = "https://cyber.gachon.ac.kr/course/view.php";
+    private static final String baseUrl = "https://cyber.gachon.ac.kr";
 
     private final String[] week_patterns = {
             "(\\d+)Week \\[(\\d+) (\\p{Alpha}+) - (\\d+) (\\p{Alpha}+)\\]",
@@ -129,7 +129,7 @@ public class LectureActivity extends AppCompatActivity {
     }
 
     private void requestCourse(String url) {
-        Call<ResponseBody> connect = api.course(url.substring(baseUrl.length() + 4));
+        Call<ResponseBody> connect = api.getUri(url.substring(baseUrl.length()));
         connect.enqueue(new Callback<ResponseBody>() {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
@@ -178,7 +178,7 @@ public class LectureActivity extends AppCompatActivity {
                 R.drawable.ic_announcement,
                 Color.argb(255, 255, 94, 0));
 
-        ArrayList<String> li = new ArrayList<String>();
+        ArrayList<String> li = new ArrayList<>();
         for (Iterator<String> it = data.keys(); it.hasNext();) {
             String t = it.next();
 
@@ -361,10 +361,14 @@ public class LectureActivity extends AppCompatActivity {
             if (elem.color != 0) {
                 bigN.setBackgroundTintList(ColorStateList.valueOf(elem.color));
 
-                int r = 255 - Color.red(elem.color);
-                int g = 255 - Color.green(elem.color);
-                int b = 255 - Color.blue(elem.color);
-                num_noti.setBackgroundTintList(ColorStateList.valueOf(Color.argb(255, r, g, b)));
+                int com_color = (Color.WHITE - elem.color) | 0xFF000000;
+                num_noti.setBackgroundTintList(ColorStateList.valueOf(com_color));
+
+                if (elem.color < Color.LTGRAY) // darker than lightgray
+                    num_noti.setTextColor(Color.BLACK);
+                else
+                    num_noti.setTextColor(Color.WHITE);
+
                 num_noti.setClipToOutline(true);
             }
 
@@ -378,7 +382,47 @@ public class LectureActivity extends AppCompatActivity {
         }
     }
 
+<<<<<<< Updated upstream
     public void NotiShortCut(String link) {
         Log.d("CCPP", "Noti: " + link);
+=======
+    public void requestAnnouncementsLink(String link) {
+        Call<ResponseBody> connect = MainActivity.api.getUri(link+"&ls=100");
+        connect.enqueue(new Callback<ResponseBody>() {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
+                        ArrayList<ListForm> announcementLink = parser.getCourseAnnouncementList();
+                        for(ListForm l :announcementLink){
+                            requestAnnouncements(l.link, new ContentForm("","","","",l.payload));
+                        }
+                    } catch (Exception ignored) { }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+            }
+        });
+    }
+
+    public void requestAnnouncements(String link,ContentForm content) {
+        Call<ResponseBody> connect = MainActivity.api.getUri(link);
+        connect.enqueue(new Callback<ResponseBody>() {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
+                        ContentForm data = parser.getAnnouncementContent();
+                        data.payload = content.payload;
+                        announcementContent.add(data);
+                    } catch (Exception ignored) { }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+            }
+        });
+>>>>>>> Stashed changes
     }
 }

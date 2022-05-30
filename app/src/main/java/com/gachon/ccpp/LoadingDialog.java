@@ -17,7 +17,7 @@ public class LoadingDialog extends Dialog
     {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_loading);
+        setContentView(R.layout.loading_dialog);
 
         animationView = findViewById(R.id.animation);
         loadingText = findViewById(R.id.loading_text);

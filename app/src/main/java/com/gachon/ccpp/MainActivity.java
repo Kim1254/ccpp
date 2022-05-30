@@ -6,10 +6,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+<<<<<<< Updated upstream
 import android.os.Parcelable;
+=======
+import android.os.Environment;
+>>>>>>> Stashed changes
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,8 +30,23 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+<<<<<<< Updated upstream
 import java.io.IOException;
 import java.util.ArrayList;
+=======
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+>>>>>>> Stashed changes
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -34,6 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.gachon.ccpp.api.UserManager;
+import com.gachon.ccpp.parser.ContentCollector;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;
 
@@ -54,7 +75,11 @@ public class MainActivity extends AppCompatActivity {
 
     private String sourceId;
 
+<<<<<<< Updated upstream
     Bundle bundle;
+=======
+    ContentCollector collector;
+>>>>>>> Stashed changes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +110,14 @@ public class MainActivity extends AppCompatActivity {
 
         lecture.setArguments(bundle);
 
+<<<<<<< Updated upstream
         transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragLayout, lecture).commit();
+=======
+        collector = new ContentCollector(getApplicationContext());
+
+        infoRequest();
+>>>>>>> Stashed changes
 
         Button lectureButton = findViewById(R.id.footer_lecture);
         lectureButton.setOnClickListener(new View.OnClickListener() {

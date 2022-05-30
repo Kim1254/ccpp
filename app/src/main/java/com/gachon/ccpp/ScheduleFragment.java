@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,12 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ScheduleFragment extends Fragment {
     @Nullable
@@ -38,6 +44,19 @@ public class ScheduleFragment extends Fragment {
                         ResourcesCompat.getColor(getResources(), R.color.gcc_orange, null))
         );
 
+<<<<<<< Updated upstream
+=======
+        cal.setOnDateChangedListener((widget, date, selected) -> {
+            String date_str = date.toString();
+            String deadline = date_str.substring(date_str.indexOf("{") + 1,
+                    date_str.indexOf("}"));
+
+            Intent intent = new Intent(getContext(), DeadlinePopupActivity.class);
+            intent.putExtra("date", deadline);
+            startActivity(intent);
+        });
+
+>>>>>>> Stashed changes
         return view;
     }
 

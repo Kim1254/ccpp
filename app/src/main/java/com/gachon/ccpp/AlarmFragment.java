@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -16,8 +15,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,15 +92,15 @@ public class AlarmFragment extends Fragment {
 
             if (view == null) {
                 LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inf.inflate(R.layout.alarm_item, parent, false);
+                view = inf.inflate(R.layout.vertical_item, parent, false);
             } else {
                 View newView = new View(ctx);
                 newView = (View) view;
             }
 
-            ImageView img = view.findViewById(R.id.elem_alarm_img);
-            TextView tv = view.findViewById(R.id.elem_alarm_title);
-            TextView context = view.findViewById(R.id.elem_alarm_ctx);
+            ImageView img = view.findViewById(R.id.vert_item_icon);
+            TextView tv = view.findViewById(R.id.vert_item_title);
+            TextView context = view.findViewById(R.id.vert_item_ctx);
 
             if (item.icon != 0)
                 img.setImageResource(item.icon);

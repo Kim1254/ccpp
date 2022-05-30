@@ -21,18 +21,6 @@ public interface RetrofitAPI {
     );
 
     @Headers("Accept-Language: ko-KR,ko;q=0.9")
-    @GET("/user/user_edit.php")
-    Call<ResponseBody> info (
-            @Query("id") String id
-    );
-
-    @Headers("Accept-Language: ko-KR,ko;q=0.9")
-    @GET("/course/view.php")
-    Call<ResponseBody> course (
-            @Query("id") String id
-    );
-
-    @Headers("Accept-Language: ko-KR,ko;q=0.9")
     @GET
     Call<ResponseBody> getUri(@Url String uri);
 }

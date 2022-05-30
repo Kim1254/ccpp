@@ -44,5 +44,6 @@
     <string name="LectureActivity_assignment">Assignment</string>
 
     <string name="ChatActivity_submit">Submit</string>
+    <string name="DeadlineActivity_Context_Empty">No activity</string>
 
 </resources>
