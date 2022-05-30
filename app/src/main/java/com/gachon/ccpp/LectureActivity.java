@@ -52,8 +52,6 @@ public class LectureActivity extends AppCompatActivity {
 
     private JSONObject data = null;
 
-    private static final String baseUrl = "https://cyber.gachon.ac.kr/course/view.php";
-
     private ArrayList<ContentForm> announcementContent;
     private final String[] week_patterns = {
             "(\\d+)Week \\[(\\d+) (\\p{Alpha}+) - (\\d+) (\\p{Alpha}+)\\]",
@@ -135,7 +133,7 @@ public class LectureActivity extends AppCompatActivity {
     }
 
     private void requestCourse(String url) {
-        Call<ResponseBody> connect = api.course(url.substring(baseUrl.length() + 4));
+        Call<ResponseBody> connect = api.getUri(url);
         connect.enqueue(new Callback<ResponseBody>() {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
@@ -372,11 +370,13 @@ public class LectureActivity extends AppCompatActivity {
             if (elem.color != 0) {
                 bigN.setBackgroundTintList(ColorStateList.valueOf(elem.color));
 
-                int r = 255 - Color.red(elem.color);
-                int g = 255 - Color.green(elem.color);
-                int b = 255 - Color.blue(elem.color);
-                num_noti.setBackgroundTintList(ColorStateList.valueOf(Color.argb(255, r, g, b)));
-                num_noti.setClipToOutline(true);
+                int com_color = (Color.WHITE - elem.color) | 0xFF000000;
+                num_noti.setBackgroundTintList(ColorStateList.valueOf(com_color));
+
+                if (elem.color < Color.LTGRAY) // darker than lightgray
+                    num_noti.setTextColor(Color.BLACK);
+                else
+                    num_noti.setTextColor(Color.WHITE);
             }
 
             week.setText(elem.name);
