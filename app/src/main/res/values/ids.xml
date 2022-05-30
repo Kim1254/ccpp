@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="linearlayout" type="id" />
+    <item name="announcement_num" type="id" />
+    <item name="announcement_title" type="id" />
+    <item name="announcement_writer" type="id" />
+    <item name="announcement_date" type="id" />
+    <item name="announcement_content" type="id" />
+</resources>

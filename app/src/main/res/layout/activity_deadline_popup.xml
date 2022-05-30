@@ -1,83 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#eeeeee"
     android:layout_width="300dp"
-    android:layout_height="400dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".DeadlinePopupActivity">
 
-    <TextView
-        android:id="@+id/title_bar"
-        android:text="Date"
-        android:textSize="20sp"
-        android:textColor="#000"
-        android:gravity="center"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/titlebar"
+            android:text="Date"
+            android:textSize="20sp"
+            android:textColor="#000"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
 
     <View
         android:background="#66bdbdbd"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/content" />
+        android:layout_height="1dp" />
 
-    <TextView
-        android:id="@+id/empty_content"
+    <LinearLayout
         android:padding="24dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/DeadlineActivity_Context_Empty"
-        android:visibility="invisible"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:layout_constraintBottom_toTopOf="@id/close_btn"/>
+        android:layout_height="wrap_content" >
 
-    <GridView
-        android:id="@+id/content"
-        android:padding="24dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:visibility="invisible"
-        android:numColumns="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:layout_constraintBottom_toTopOf="@id/close_btn"/>
+        <TextView
+            android:id="@+id/content"
+            android:textSize="15sp"
+            android:text="챱챱"
+            android:alpha="0.9"
+            android:gravity="center"
+            android:layout_marginBottom="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 
     <View
         android:background="#66bdbdbd"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/close_btn"/>
+        android:layout_height="1dp" />
 
-    <Button
-        android:id="@+id/close_btn"
-        android:text="Close"
-        android:textSize="15sp"
-        android:textColor="@color/gcc_darkernavy"
-        android:padding="16dp"
+    <LinearLayout
+        android:orientation="horizontal"
         android:gravity="center"
-        android:background="#00000000"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:onClick="mOnClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:layout_height="wrap_content">
+
+        <Button
+            android:text="Close"
+            android:textSize="15sp"
+            android:textColor="@color/gcc_darkernavy"
+            android:padding="16dp"
+            android:gravity="center"
+            android:background="#00000000"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="mOnClose" />
+
+    </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

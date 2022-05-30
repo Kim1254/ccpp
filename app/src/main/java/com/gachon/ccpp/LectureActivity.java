@@ -18,6 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
+import com.gachon.ccpp.parser.ContentForm;
+import com.gachon.ccpp.parser.HtmlParser;
+import com.gachon.ccpp.parser.ListForm;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +31,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -48,8 +52,9 @@ public class LectureActivity extends AppCompatActivity {
 
     private JSONObject data = null;
 
-    private static final String baseUrl = "https://cyber.gachon.ac.kr";
+    private static final String baseUrl = "https://cyber.gachon.ac.kr/course/view.php";
 
+    private ArrayList<ContentForm> announcementContent;
     private final String[] week_patterns = {
             "(\\d+)Week \\[(\\d+) (\\p{Alpha}+) - (\\d+) (\\p{Alpha}+)\\]",
             "(\\d+)주차 \\[(\\d+)월(\\d+)일 - (\\d+)월(\\d+)일\\]"
@@ -67,6 +72,7 @@ public class LectureActivity extends AppCompatActivity {
         current_list = findViewById(R.id.element_list_current);
         weekly_list = findViewById(R.id.element_list_weekly);
 
+        announcementContent = new ArrayList<>();
         Intent it = getIntent();
         if (it != null) {
             if (it.getStringExtra("title") != null)
@@ -129,12 +135,17 @@ public class LectureActivity extends AppCompatActivity {
     }
 
     private void requestCourse(String url) {
-        Call<ResponseBody> connect = api.getUri(url.substring(baseUrl.length()));
+        Call<ResponseBody> connect = api.course(url.substring(baseUrl.length() + 4));
         connect.enqueue(new Callback<ResponseBody>() {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
                         Document html = Jsoup.parse(response.body().string());
+
+                        HtmlParser parser = new HtmlParser(html);
+                        String link = parser.getClassAnnouncementLink();
+                        requestAnnouncementsLink(link);
+
                         Element article = html.select(".section.main.clearfix.current").first();
 
                         data = new JSONObject();
@@ -178,7 +189,7 @@ public class LectureActivity extends AppCompatActivity {
                 R.drawable.ic_announcement,
                 Color.argb(255, 255, 94, 0));
 
-        ArrayList<String> li = new ArrayList<>();
+        ArrayList<String> li = new ArrayList<String>();
         for (Iterator<String> it = data.keys(); it.hasNext();) {
             String t = it.next();
 
@@ -361,14 +372,10 @@ public class LectureActivity extends AppCompatActivity {
             if (elem.color != 0) {
                 bigN.setBackgroundTintList(ColorStateList.valueOf(elem.color));
 
-                int com_color = (Color.WHITE - elem.color) | 0xFF000000;
-                num_noti.setBackgroundTintList(ColorStateList.valueOf(com_color));
-
-                if (elem.color < Color.LTGRAY) // darker than lightgray
-                    num_noti.setTextColor(Color.BLACK);
-                else
-                    num_noti.setTextColor(Color.WHITE);
-
+                int r = 255 - Color.red(elem.color);
+                int g = 255 - Color.green(elem.color);
+                int b = 255 - Color.blue(elem.color);
+                num_noti.setBackgroundTintList(ColorStateList.valueOf(Color.argb(255, r, g, b)));
                 num_noti.setClipToOutline(true);
             }
 
@@ -376,16 +383,14 @@ public class LectureActivity extends AppCompatActivity {
             num_noti.setText("" + elem.num);
 
             view.setOnClickListener(view_ -> {
-                NotiShortCut(elem.link);
+                Intent intent = new Intent(getApplicationContext(),AnnouncementActivity.class);
+                intent.putExtra("list",announcementContent);
+                startActivity(intent);
             });
             return view;
         }
     }
 
-<<<<<<< Updated upstream
-    public void NotiShortCut(String link) {
-        Log.d("CCPP", "Noti: " + link);
-=======
     public void requestAnnouncementsLink(String link) {
         Call<ResponseBody> connect = MainActivity.api.getUri(link+"&ls=100");
         connect.enqueue(new Callback<ResponseBody>() {
@@ -395,13 +400,14 @@ public class LectureActivity extends AppCompatActivity {
                         HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
                         ArrayList<ListForm> announcementLink = parser.getCourseAnnouncementList();
                         for(ListForm l :announcementLink){
-                            requestAnnouncements(l.link, new ContentForm("","","","",l.payload));
+                            requestAnnouncements(l.link,new ContentForm("","","","",l.payload));
                         }
-                    } catch (Exception ignored) { }
+                    } catch (Exception e) {
+                    }
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
             }
         });
     }
@@ -416,13 +422,13 @@ public class LectureActivity extends AppCompatActivity {
                         ContentForm data = parser.getAnnouncementContent();
                         data.payload = content.payload;
                         announcementContent.add(data);
-                    } catch (Exception ignored) { }
+                    } catch (Exception e) {
+                    }
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
             }
         });
->>>>>>> Stashed changes
     }
 }

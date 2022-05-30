@@ -2,14 +2,11 @@ package com.gachon.ccpp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,23 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LectureFragment extends Fragment {
-    View thisView;
-
-    ArrayList<ListForm> courseList;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        thisView = inflater.inflate(R.layout.fragment_lecture, container, false);
+        View view = inflater.inflate(R.layout.fragment_lecture, container, false);
 
         Bundle bundle = getArguments();
-        courseList = (ArrayList<ListForm>) bundle.getSerializable("courseList");
+        ArrayList<ListForm> courseList = (ArrayList<ListForm>) bundle.getSerializable("courseList");
 
-        GridView grid = thisView.findViewById(R.id.lecture_list);
+        GridView grid = view.findViewById(R.id.lecture_list);
         grid.setAdapter(new LectureAdapter(courseList));
 
-        return thisView;
+        return view;
     }
 
     public void startLecture(String title, String url) {
@@ -89,9 +82,9 @@ public class LectureFragment extends Fragment {
             TextView tv = view.findViewById(R.id.lec_name);
             TextView cid = view.findViewById(R.id.lec_id);
 
-            if (form.image != null) {
+            if (!form.payload.contentEquals("")) {
                 ImageView iv = view.findViewById(R.id.lec_img);
-                Glide.with(view).load(form.image).into(iv);
+                Glide.with(view).load(form.payload).into(iv);
                 iv.setClipToOutline(true);
             }
 
