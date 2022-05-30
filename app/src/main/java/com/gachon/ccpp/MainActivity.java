@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
@@ -17,7 +17,6 @@ import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -27,6 +26,7 @@ import retrofit2.Response;
 import com.gachon.ccpp.api.UserManager;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;
+import com.gachon.ccpp.parser.TableForm;
 
 public class MainActivity extends AppCompatActivity {
     public static RetrofitClient retrofitClient;

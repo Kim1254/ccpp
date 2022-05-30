@@ -7,6 +7,8 @@ import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HtmlParser {
     private Document html;
@@ -275,4 +277,99 @@ public class HtmlParser {
         return data;
     }
 
+    //성적
+    // uri local/ubion/set
+    // ting/syllabus.php?id=XXXXX
+    //0은 제목 1은 링크
+    // 마지막row은 total
+    public TableForm getGrade(){
+        Elements selected = html.select( "table");
+        TableForm data = new TableForm();
+        Map<Integer,String> row = new HashMap<Integer,String>();
+        selected = selected.select("tbody tr");
+        selected.remove(0);
+        for(Element e: selected){
+            row = new HashMap<>();
+            Elements columns = e.select("td");
+            row.put(0,e.select("a").text());
+            row.put(1,e.select("a").attr("href"));
+            row.put(2,columns.get(0).text());
+            row.put(3,columns.get(1).text());
+            row.put(4,columns.get(2).text());
+            row.put(5,columns.get(3).text());
+            row.put(6,columns.get(4).toString());
+            row.put(7,columns.get(5).text());
+            data.addRow(row);
+        }
+        return data;
+    }
+
+    //수업계획서
+    //html 그대로 반환
+    ///local/ubion/setting/syllabus.php?id=XXXXX
+    public String getSyllabus(){
+        Elements selected = html.select( ".course_syllabus .syllabus table");
+        return selected.toString();
+    }
+
+    //과제들
+    //row -> 1,제목 2.링크
+    public TableForm getAllAssignment(){
+        Elements selected = html.select( "#region-main");
+        TableForm data = new TableForm();
+        Map<Integer,String> row = new HashMap<Integer,String>();
+        selected = selected.select("tbody tr");
+        for(Element e: selected){
+            if(e.childNodeSize()==1)continue;
+            row = new HashMap<>();
+            Elements columns = e.select("td");
+            row.put(0,columns.get(0).text());
+            row.put(1,e.select("a").text());
+            row.put(2,e.select("a").attr("href"));
+            row.put(3,columns.get(2).text());
+            row.put(4,columns.get(3).text());
+            row.put(5,columns.get(4).text());
+            data.addRow(row);
+        }
+        return data;
+    }
+
+    //과제 딱 하나 내용
+    //첫 로우 -> 0제목 1설명 2 피드백이 있는지 0,1
+    //피드백이 있으면 마지막 4개는 피드백
+    public TableForm getAssignment() {
+        Elements selected = html.select("#region-main");
+        Elements feedback = html.select(".feedback tr");
+        TableForm data = new TableForm();
+        Map<Integer, String> row = new HashMap<Integer, String>();
+        row.put(0,selected.select("h2").text());
+        row.put(1,selected.select(".no-overflow").toString());
+        if(feedback!=null){
+            row.put(2,"1");
+        }else{
+            row.put(2,"0");
+        }
+        data.addRow(row);
+        selected = selected.select(".submissionstatustable tr");
+        for (Element e : selected) {
+            row = new HashMap<>();
+            Elements columns = e.select("td");
+            row.put(0, columns.get(0).text());
+            row.put(1, columns.get(1).text());
+            data.addRow(row);
+        }
+        data.table.remove(data.table.size()-1);
+        data.table.remove(data.table.size()-1);
+        if(feedback!=null){
+            for(Element e : feedback){
+                row = new HashMap<>();
+                Elements columns = e.select("td");
+                row.put(0, columns.get(0).text());
+                if(e.select(".lastrow")==null)row.put(1, columns.get(1).text());
+                else row.put(1, columns.get(1).toString());
+                data.addRow(row);
+            }
+        }
+        return data;
+    }
 }

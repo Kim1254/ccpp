@@ -33,6 +33,24 @@ public interface RetrofitAPI {
     );
 
     @Headers("Accept-Language: ko-KR,ko;q=0.9")
+    @GET("/local/ubion/setting/syllabus.php")
+    Call<ResponseBody> syllabus (
+            @Query("id") String id
+    );
+
+    @Headers("Accept-Language: ko-KR,ko;q=0.9")
+    @GET("/grade/report/user/index.php")
+    Call<ResponseBody> grade (
+            @Query("id") String id
+    );
+
+    @Headers("Accept-Language: ko-KR,ko;q=0.9")
+    @GET("/mod/assign/index.php")
+    Call<ResponseBody> assignment (
+            @Query("id") String id
+    );
+
+    @Headers("Accept-Language: ko-KR,ko;q=0.9")
     @GET
     Call<ResponseBody> getUri(@Url String uri);
 }
