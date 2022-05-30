@@ -25,6 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.gachon.ccpp.api.UserManager;
+import com.gachon.ccpp.parser.ContentCollector;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;
 
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private AlarmFragment alarm;
     private ChatFragment chat;
     private SettingFragment setting;
+
+    private ContentCollector collector;
 
     public ArrayList<ListForm> scheduleList;
 
@@ -80,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         setting = new SettingFragment();
 
         lecture.setArguments(bundle);
+
+        collector = new ContentCollector(getApplicationContext());
 
         infoRequest();
 

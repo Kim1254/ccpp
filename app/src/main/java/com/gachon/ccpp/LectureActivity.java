@@ -135,7 +135,7 @@ public class LectureActivity extends AppCompatActivity {
     }
 
     private void requestCourse(String url) {
-        Call<ResponseBody> connect = api.course(url.substring(baseUrl.length() + 4));
+        Call<ResponseBody> connect = api.getUri(url);
         connect.enqueue(new Callback<ResponseBody>() {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {

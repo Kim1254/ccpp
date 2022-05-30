@@ -111,15 +111,16 @@ public class HtmlParser {
         for(Element e: selected){
             data.add(new ListForm(
                     e.select(".course-title h3").text(),
-                    "",e.select(".prof").text(),e.select(".course_link").attr("href"),
-                    ""));
+                    "",
+                    e.select(".prof").text(),
+                    e.select(".course_link").attr("href"),
+                    e.select(".course-image img").attr("src")));
         }
         return data;
     }
 
     //강의 내에서 세부정보
     //Uri "course/view.php?id=xxxxx"
-
     public ArrayList<String> getInCourseTitle(){
         Elements selected = html.select( ".total_sections .mod-indent-outer .instancename");
         ArrayList<String> data = new ArrayList<String>();
@@ -224,7 +225,7 @@ public class HtmlParser {
     //공지 내용
     //uri mod/ubboard/article.php?id=xxxxxx&bwid=xxxxxx
     //payload => 조회수 -> ": XXX"
-    public ContentForm getAnnouncementContent(){
+    public ContentForm getAnnouncementContent() {
         Elements selected = html.select( ".ubboard");
         selected.select(".title").empty();
         ContentForm data = new ContentForm(
@@ -237,7 +238,7 @@ public class HtmlParser {
     }
 
     //payload => "Next:" 또는 "Prev:"
-    public ArrayList<ListForm> getPreNextAnnouncementList(){
+    public ArrayList<ListForm> getPreNextAnnouncementList() {
         Elements selected = html.select( ".pre_next");
         ArrayList<ListForm> data = new ArrayList<ListForm>();
         for(Element e: selected){
@@ -258,10 +259,10 @@ public class HtmlParser {
     //title => 새 XX이 등록되었습니다.
     //data => 몇시간전/며칠전
     //payload => X주차
-    public ArrayList<ListForm> getAllAnnouncement(){
+    public ArrayList<ListForm> getAllAnnouncement() {
         Elements selected = html.select( ".media");
         ArrayList<ListForm> data = new ArrayList<ListForm>();
-        for(Element e: selected){
+        for (Element e: selected) {
             String sectionname =e.select(".sectionname").text();
             String title = e.select("h4").text();
             e.select(".sectionname").empty();
@@ -273,6 +274,26 @@ public class HtmlParser {
                     sectionname));
         }
         return data;
+    }
+
+    public ContentForm getAssignmentContent() {
+        Elements selected = html.select(".generaltable.table.table-bordered .tr");
+
+        String content = "";
+        String link = "";
+
+        Elements file = selected.get(6).select("ygtv1.ygtvitem");
+        if (file.first() != null) {
+            content = file.select("div a").text();
+            link = file.select("div a").attr("href");
+        }
+
+        return new ContentForm(
+                "",
+                selected.get(3).child(1).text(),
+                "",
+                content,
+                link);
     }
 
 }
