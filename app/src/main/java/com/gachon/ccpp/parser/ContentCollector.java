@@ -54,8 +54,7 @@ public class ContentCollector {
         if (!loadData()) {
             Log.d("CCPP", "launch failed: refresh");
             refresh();
-        }
-        else {
+        } else {
             Log.d("CCPP", "load succeed: " + head.toString().length() + ", " + context.toString().length());
         }
     }
@@ -93,7 +92,7 @@ public class ContentCollector {
         }
     }
 
-    private boolean saveData() {
+    private void saveData() {
         try {
             FileOutputStream fos = ctx.openFileOutput("_data",
                     Context.MODE_PRIVATE);
@@ -107,10 +106,7 @@ public class ContentCollector {
 
             dos.flush();
             dos.close();
-
-            return true;
         } catch (Exception e) { e.printStackTrace(); }
-        return false;
     }
 
     public boolean loadData() {
@@ -212,7 +208,10 @@ public class ContentCollector {
 
             try {
                 requestContext();
-            } catch (JSONException e) { e.printStackTrace(); }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("CCPP", "exception", e);
+            }
 
             while (state_current != collectionState.FAILURE) {
                 if (num_request == 0)
@@ -221,6 +220,7 @@ public class ContentCollector {
 
             state_current = collectionState.LECTURE_CONTEXT;
             updateContext();
+            Log.d("CCPP", "Context load ended.");
         }
 
         private void requestActivity() throws JSONException {
@@ -367,53 +367,48 @@ public class ContentCollector {
 
         private void requestContext() throws JSONException {
             num_request = 0;
-            Log.d("CCPP", "head length: " + newHead.toString().length());
+
             for (Iterator<String> it = newHead.keys(); it.hasNext(); ) {
                 String key = it.next();
-                Log.d("CCPP", "key1: " + key);
-
                 JSONObject lec = new JSONObject(newHead.getString(key));
-                JSONObject activity = new JSONObject(lec.getString("activity"));
-                JSONObject announcement = new JSONObject(lec.getString("announcement"));            Log.d("CCPP", "head length: " + newHead.toString().length());
 
-                Log.d("CCPP", "act length: " + activity.toString().length() + ", "
-                        + "ann length: " + announcement.toString().length());
+                if (lec.has("activity")) {
+                    JSONObject activity = new JSONObject(lec.getString("activity"));
 
-                for (Iterator<String> iter = activity.keys(); iter.hasNext(); ) {
-                    String child_key = iter.next();
-                    Log.d("CCPP", "key2: " + child_key);
-                    if (child_key.contentEquals("current"))
-                        continue;
-
-                    JSONObject child = new JSONObject(activity.getString(child_key));
-
-                    for (Iterator<String> itera = child.keys(); itera.hasNext(); ) {
-                        String child_key2 = itera.next();
-                        JSONObject child2 = new JSONObject(child.getString(child_key2));
-
-                        if (!child2.has("link"))
+                    for (Iterator<String> iter = activity.keys(); iter.hasNext(); ) {
+                        String child_key = iter.next();
+                        if (child_key.contentEquals("current"))
                             continue;
 
-                        requestAssContext(key + "\\/*activity\\/*" + child_key
-                                        + "\\/*" + child_key2,
-                                child2.getString("link"));
+                        JSONObject child = new JSONObject(activity.getString(child_key));
+
+                        for (Iterator<String> itera = child.keys(); itera.hasNext(); ) {
+                            String child_key2 = itera.next();
+                            JSONObject child2 = new JSONObject(child.getString(child_key2));
+
+                            if (!child2.has("link"))
+                                continue;
+
+                            String path = key + "\\/*activity\\/*" + child_key + "\\/*" + child_key2;
+                            requestAssContext(path, child2.getString("link"));
+                        }
                     }
                 }
 
-                for (Iterator<String> iter = announcement.keys(); iter.hasNext(); ) {
-                    String child_key = iter.next();
-                    JSONObject child = new JSONObject(announcement.getString(child_key));
+                if (lec.has("announcement")) {
+                    JSONObject announcement = new JSONObject(lec.getString("announcement"));
+                    Log.d("CCPP", "ann length: " + announcement.toString().length());
+                    for (Iterator<String> iter = announcement.keys(); iter.hasNext(); ) {
+                        String child_key = iter.next();
+                        JSONObject child = new JSONObject(announcement.getString(child_key));
+                        Log.d("CCPP", child_key + ": " + announcement.getString(child_key));
 
-                    for (Iterator<String> itera = child.keys(); itera.hasNext(); ) {
-                        String child_key2 = iter.next();
-                        JSONObject child2 = new JSONObject(child.getString(child_key));
-
-                        if (!child2.has("link"))
+                        if (!child.has("link"))
                             continue;
 
-                        requestAnnContext(key + "\\/*announcement\\/*" + child_key
-                                + "\\/*" + child_key2,
-                                child2.getString("link"));
+                        String path = key + "\\/*announcement\\/*" + child_key;
+                        Log.d("CCPP", "announcement: " + path + ", " + child.getString("link"));
+                        requestAnnContext(path, child.getString("link"));
                     }
                 }
             }
@@ -422,7 +417,6 @@ public class ContentCollector {
         }
 
         private void requestAnnContext(String path, String link) {
-            Log.d("CCPP", "Requested: " + path);
             num_request++;
             api.getUri(link).enqueue(new Callback<ResponseBody>() {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
@@ -452,7 +446,6 @@ public class ContentCollector {
         }
 
         private void requestAssContext(String path, String link) {
-            Log.d("CCPP", "Requested: " + path);
             num_request++;
             api.getUri(link).enqueue(new Callback<ResponseBody>() {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
