@@ -227,16 +227,11 @@ public class HtmlParser {
     public ContentForm getAnnouncementContent(){
         Elements selected = html.select( ".ubboard");
         selected.select(".title").empty();
-        Elements temp = selected.select(".text_to_html");
-        temp.select("br").before("\\n");
-        temp.select("p").before("\\n");
-        String text = temp.html().replaceAll("\\\\n","\n");
-        text = Jsoup.clean(text,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replaceAll("&nbsp;"," ").replaceAll("\\s{3,}", "\n\n");;
         ContentForm data = new ContentForm(
                 selected.select(".subject").text(),
                 selected.select(".info .date").text().substring(2),
                 selected.select(".info .writer").text().substring(2),
-                text,
+                selected.select(".text_to_html").toString(),
                 selected.select(".info .hit").text());
         return data;
     }

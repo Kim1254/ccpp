@@ -1,6 +1,7 @@
 package com.gachon.ccpp;
 
 import android.animation.ValueAnimator;
+import android.text.Html;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,7 +109,7 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
             writer.setText(data.writer);
             date.setText(data.date);
             num.setText(data.payload);
-            content.setText(data.content);
+            content.setText(Html.fromHtml(data.content));
             content.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             int heightValue = content.getMeasuredHeight();
             height.setText(String.valueOf(heightValue));
