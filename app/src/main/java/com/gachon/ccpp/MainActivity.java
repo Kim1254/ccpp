@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private ChatFragment chat;
     private SettingFragment setting;
 
-    private ContentCollector collector;
-
     public ArrayList<ListForm> scheduleList;
 
     private String sourceId;
@@ -83,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         setting = new SettingFragment();
 
         lecture.setArguments(bundle);
-
-        collector = new ContentCollector(getApplicationContext());
 
         infoRequest();
 
@@ -193,6 +189,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().show();
 
         transaction = fragManager.beginTransaction();
-        transaction.replace(R.id.fragLayout, fragment).commit();
+        transaction.replace(R.id.fragLayout, fragment).addToBackStack(null).commit();
     }
 }

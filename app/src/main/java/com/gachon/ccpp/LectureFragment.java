@@ -6,8 +6,11 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -21,7 +24,7 @@ import com.gachon.ccpp.parser.ListForm;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LectureFragment extends Fragment {
+public class LectureFragment extends Fragment implements onBackPressedListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,11 +40,21 @@ public class LectureFragment extends Fragment {
         return view;
     }
 
-    public void startLecture(String title, String url) {
-        Intent it = new Intent(getActivity(), LectureActivity.class);
-        it.putExtra("title", title);
-        it.putExtra("link", url);
-        startActivity(it);
+    public void startLecture(ListForm lecture) {
+        LectureContentFragment lectureContentFragment = new LectureContentFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("lecture",lecture);
+        lectureContentFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragLayout, lectureContentFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(this).commit();
+        fragmentManager.popBackStack();
     }
 
     private class LectureAdapter extends BaseAdapter {
@@ -92,7 +105,7 @@ public class LectureFragment extends Fragment {
             cid.setText(form.writer);
 
             view.setOnClickListener(view_ -> {
-                startLecture(form.title, form.link);
+                startLecture(form);
             });
 
             return view;

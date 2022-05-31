@@ -1,17 +1,17 @@
 package com.gachon.ccpp.parser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TableForm {
-    //Map<String,String> row = new HashMap<String,String>();
-    ArrayList<Map> table;
+public class TableForm implements Serializable {
+    public ArrayList<Map<Integer,String>> table;
 
     TableForm(){
         table = new ArrayList<>();
     }
-    TableForm(ArrayList<Map> table){
+    TableForm(ArrayList<Map<Integer,String>> table){
         this.table = table;
     }
 

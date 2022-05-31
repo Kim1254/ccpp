@@ -292,15 +292,16 @@ public class HtmlParser {
         selected.remove(0);
         for(Element e: selected){
             row = new HashMap<>();
-            Elements columns = e.select("td");
+            Elements columns = e.select(".level2");
+            if(columns.size()==0)continue;
             row.put(0,e.select("a").text());
             row.put(1,e.select("a").attr("href"));
-            row.put(2,columns.get(0).text());
-            row.put(3,columns.get(1).text());
-            row.put(4,columns.get(2).text());
-            row.put(5,columns.get(3).text());
-            row.put(6,columns.get(4).toString());
-            row.put(7,columns.get(5).text());
+            row.put(2,columns.get(1).text());
+            row.put(3,columns.get(2).text());
+            row.put(4,columns.get(3).text());
+            row.put(5,columns.get(4).text());
+            row.put(6,columns.get(5).toString());
+            row.put(7,columns.get(6).text());
             data.addRow(row);
         }
         return data;
@@ -310,7 +311,7 @@ public class HtmlParser {
     //html 그대로 반환
     ///local/ubion/setting/syllabus.php?id=XXXXX
     public String getSyllabus(){
-        Elements selected = html.select( ".course_syllabus .syllabus table");
+        Elements selected = html.select( ".course_syllabus");
         return selected.toString();
     }
 
@@ -346,7 +347,7 @@ public class HtmlParser {
         Map<Integer, String> row = new HashMap<Integer, String>();
         row.put(0,selected.select("h2").text());
         row.put(1,selected.select(".no-overflow").toString());
-        if(feedback!=null){
+        if(feedback.size()!=0){
             row.put(2,"1");
         }else{
             row.put(2,"0");
@@ -367,7 +368,7 @@ public class HtmlParser {
                 row = new HashMap<>();
                 Elements columns = e.select("td");
                 row.put(0, columns.get(0).text());
-                if(e.select(".lastrow")==null)row.put(1, columns.get(1).text());
+                if(columns.get(1).select(".lastrow").size()==0)row.put(1, columns.get(1).text());
                 else row.put(1, columns.get(1).toString());
                 data.addRow(row);
             }
