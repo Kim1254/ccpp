@@ -373,7 +373,11 @@ public class ContentCollector {
                                         e.select("div.tools a").attr("href"));
 
                                 String link = e.select(".media-body a").attr("href");
-                                chat.put(link.split("&id=")[1], json);
+                                if (link.contains("gmessage.php"))
+                                    json.put("type", "group");
+                                else
+                                    json.put("type", "individual");
+                                chat.put(link.split("&id=")[1], json.toString());
                             }
                             synchronized (newHead) {
                                 newHead.put("chat", chat);

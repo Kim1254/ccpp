@@ -46,6 +46,7 @@ public class ChatActivity extends AppCompatActivity {
     private String title = null;
     private String link = null;
     private String img = null;
+    private String type = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class ChatActivity extends AppCompatActivity {
             title = intent.getStringExtra("title");
             link = intent.getStringExtra("link");
             img = intent.getStringExtra("image");
+            type = intent.getStringExtra("type");
             getSupportActionBar().setTitle(title);
         }
 
@@ -79,9 +81,13 @@ public class ChatActivity extends AppCompatActivity {
 
     private void request() {
         privateDialog.show("9844-loading-40-paperplane.json", getString(R.string.LoadingDialog_TextLoading));
-        Call<ResponseBody> connect = MainActivity.api.getUri(
-                String.format("local/ubmessage/message.php?page=1&id=%s&total=1", link));
-        connect.enqueue(request_callback);
+
+        if (type.contentEquals("individual"))
+            MainActivity.api.getUri(String.format("local/ubmessage/message.php?page=1&id=%s&total=1",
+                    link)).enqueue(request_callback);
+        else
+            MainActivity.api.getUri(String.format("local/ubmessage/gmessage.php?mc=&keyfield=&keyword=&page=1&id=%s",
+                    link)).enqueue(request_callback);
     }
 
     private final Callback<ResponseBody> request_callback = new Callback<ResponseBody>() {
@@ -99,44 +105,49 @@ public class ChatActivity extends AppCompatActivity {
 
                         JSONObject json = new JSONObject();
                         json.put("class", e.attr("class").trim());
-                        json.put("content", e.select(".content").text());
+                        json.put("content", e.select(".content").text().replace("<br>", "\n"));
                         json.put("time", e.select(".time").attr("title"));
                         json_list.add(json);
                     }
 
+                    Log.d("CCPP", "tesT: " + message_list.text());
+
                     grid.setAdapter(new ChatRoomAdapter(json_list));
 
-                    Elements send_field = html.select(".message_send_form.well fieldset");
-                    if (info_send == null && send_field.size() != 0) {
-                        info_send = new JSONObject();
-                        info_send.put("type",
-                                send_field.get(0).child(0).attr("value"));
-                        info_send.put("sesskey",
-                                send_field.get(0).child(1).attr("value"));
-                        info_send.put("to",
-                                send_field.get(0).child(2).attr("value"));
-                        info_send.put("returnurl",
-                                send_field.get(0).child(3).attr("value"));
+                    if (type.contentEquals("group")) {
+                        Elements send_field = html.select(".message_send_form.well fieldset");
 
-                        sendBtn.setOnClickListener(view -> {
-                            privateDialog.show("9844-loading-40-paperplane.json", getString(R.string.LoadingDialog_TextLoading));
+                        if (info_send == null) {
+                            info_send = new JSONObject();
+                            info_send.put("type",
+                                    send_field.get(0).child(0).attr("value"));
+                            info_send.put("sesskey",
+                                    send_field.get(0).child(1).attr("value"));
+                            info_send.put("to",
+                                    send_field.get(0).child(2).attr("value"));
+                            info_send.put("returnurl",
+                                    send_field.get(0).child(3).attr("value"));
 
-                            String text = contentText.getText().toString();
-                            contentText.setText("");
+                            sendBtn.setOnClickListener(view -> {
+                                privateDialog.show("9844-loading-40-paperplane.json", getString(R.string.LoadingDialog_TextLoading));
 
-                            try {
-                                MainActivity.api.send_message(
-                                        info_send.getString("type"),
-                                        info_send.getString("sesskey"),
-                                        info_send.getString("to"),
-                                        info_send.getString("returnurl"),
-                                        text).enqueue(send_callback);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        sendBtn.setEnabled(true);
-                        contentText.setEnabled(true);
+                                String text = contentText.getText().toString();
+                                contentText.setText("");
+
+                                try {
+                                    MainActivity.api.send_message(
+                                            info_send.getString("type"),
+                                            info_send.getString("sesskey"),
+                                            info_send.getString("to"),
+                                            info_send.getString("returnurl"),
+                                            text).enqueue(send_callback);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            sendBtn.setEnabled(true);
+                            contentText.setEnabled(true);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

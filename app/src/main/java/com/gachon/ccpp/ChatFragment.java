@@ -53,12 +53,14 @@ public class ChatFragment extends Fragment {
         public final String context;
         public final String img_url;
         public final String link;
+        public final String type;
 
-        public ItemFormat(String title, String context, String img_url, String link) {
+        public ItemFormat(String title, String context, String img_url, String link, String type) {
             this.title = title;
             this.context = context;
             this.img_url = img_url;
             this.link = link;
+            this.type = type;
         }
     }
 
@@ -73,6 +75,7 @@ public class ChatFragment extends Fragment {
                 String title = "Untitled";
                 String content = "";
                 String img = null;
+                String type = null;
 
                 try {
                     JSONObject child = new JSONObject(json.getString(link));
@@ -83,11 +86,13 @@ public class ChatFragment extends Fragment {
                         content = child.getString("hint");
                     if (child.has("image"))
                         img = child.getString("image");
+                    if (child.has("type"))
+                        type = child.getString("type");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                list.add(new ItemFormat(title, content, img, link));
+                list.add(new ItemFormat(title, content, img, link, type));
             }
         }
 
@@ -160,6 +165,7 @@ public class ChatFragment extends Fragment {
         it.putExtra("title", item.title);
         it.putExtra("link", item.link);
         it.putExtra("image", item.img_url);
+        it.putExtra("type", item.type);
 
         startActivity(it);
     }
