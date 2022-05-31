@@ -346,9 +346,9 @@ public class HtmlParser {
         Map<Integer, String> row = new HashMap<Integer, String>();
         row.put(0,selected.select("h2").text());
         row.put(1,selected.select(".no-overflow").toString());
-        if(feedback!=null){
+        if (feedback != null) {
             row.put(2,"1");
-        }else{
+        } else {
             row.put(2,"0");
         }
         data.addRow(row);

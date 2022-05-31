@@ -1,15 +1,13 @@
 package com.gachon.ccpp.parser;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.gachon.ccpp.MainActivity;
-import com.gachon.ccpp.R;
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
+import com.gachon.ccpp.util.AES256;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,8 +22,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -33,106 +33,98 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ContentCollector {
-    RetrofitClient retrofitClient;
-    RetrofitAPI api;
+    private static final RetrofitClient retrofitClient = RetrofitClient.getInstance();
+    private static final RetrofitAPI api = RetrofitClient.getRetrofitInterface();
 
-    public enum collectionState { FAILURE, BEGIN, LECTURE_LIST, LECTURE_ACTIVITY };
+    private static JSONObject head = null;
 
-    public JSONObject head = null;
-    private collectionState state_head = collectionState.FAILURE;
-
-    private final Context ctx;
-
-    public ContentCollector(Context ctx) {
-        retrofitClient = RetrofitClient.getInstance();
-        api = RetrofitClient.getRetrofitInterface();
-
-        this.ctx = ctx;
-        refresh();
+    public static void beginThread(collectionListener listener) {
+        new collectionTask(listener).start();
     }
 
-    public void refresh() {
-        new collectionTask().start();
-    }
-
-    public collectionState getProgress() {
-        return state_head;
-    }
-
-    public JSONObject getObject(String path) {
-        String[] args = path.split("\\/*");
+    public static JSONObject getObject(String path) {
+        String[] args = path.split("\\\\");
 
         JSONObject prev = head;
         for (String arg : args) {
-            try {
-                prev = new JSONObject(prev.getString(arg));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
+            try { prev = new JSONObject(prev.getString(arg)); }
+            catch (Exception e) { return null; }
         }
 
         return prev;
     }
 
-    private void saveData() {
+    public static void saveData(Context ctx) {
         try {
             FileOutputStream fos = ctx.openFileOutput("_data",
                     Context.MODE_PRIVATE);
             DataOutputStream dos = new DataOutputStream(fos);
 
-            dos.writeUTF(state_head.toString());
-            dos.write(head.toString().getBytes());
+            String cipher = head.toString();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+                cipher = new AES256().encrypt(cipher);
+
+            dos.write(cipher.getBytes());
 
             dos.flush();
             dos.close();
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public boolean loadData() {
+    public static boolean loadData(Context ctx) {
         try {
             FileInputStream fis = ctx.openFileInput("_data");
             DataInputStream dis = new DataInputStream(fis);
 
-            state_head = collectionState.valueOf(dis.readUTF());
-            head = new JSONObject(dis.readUTF());
+            String plain = dis.readUTF();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+                plain = new AES256().decrypt(plain);
+
+            head = new JSONObject(plain);
 
             return true;
         } catch (Exception e) { e.printStackTrace(); }
         return false;
     }
 
-    private class collectionTask extends Thread {
+    public abstract static class collectionListener {
+        public void onCompleteLectureList(boolean success) {};
+        public void onCompleteActivity(boolean success) {};
+        public void onCompleteChatList(boolean success) {};
+    }
+
+    private static class collectionTask extends Thread {
         private final JSONObject newHead = new JSONObject();
+        private final collectionListener listener;
 
-        collectionState state_current;
-
-        private int num_request;
-
-        public collectionTask() {
-            state_current = collectionState.BEGIN;
+        public collectionTask(collectionListener listener) {
+            this.listener = listener;
         }
 
         public synchronized void updateHead() {
-            if (state_current.compareTo(state_head) < 0)
-                return;
-
             head = newHead;
-            state_head = state_current;
-            saveData();
         }
 
         public void run() {
-            // requestLecture
+            new Thread(this::requestChatList).start();
+
+            requestLecture();
+            requestActivity();
+            updateHead();
+        }
+
+        private void requestLecture() {
+            final boolean[] breaker = {false};
+
             api.getUri("").enqueue(new Callback<ResponseBody>() {
                 public void onResponse(@NonNull Call<ResponseBody> call,
                                        @NonNull Response<ResponseBody> response) {
-                    if (!response.isSuccessful()) {
-                        state_current = collectionState.FAILURE;
-                    } else {
+                    if (response.isSuccessful()) {
                         try {
                             Document html = Jsoup.parse(response.body().string());
                             HtmlParser parser = new HtmlParser(html);
+
+                            JSONObject lecture = new JSONObject();
 
                             ArrayList<ListForm> list = parser.getCourseList();
                             for (ListForm e : list) {
@@ -140,96 +132,127 @@ public class ContentCollector {
                                 json.put("prof", e.writer);
                                 json.put("image", e.payload);
                                 json.put("link", e.link);
-                                newHead.put(e.title, json.toString());
+                                lecture.put(e.title, json.toString());
                             }
 
-                            state_current = collectionState.LECTURE_LIST;
+                            synchronized (newHead) {
+                                newHead.put("lecture", lecture.toString());
+                            }
+
                             updateHead();
-                        } catch (IOException | JSONException e) {
+                            if (listener != null)
+                                listener.onCompleteLectureList(true);
+                        } catch (Exception e) {
                             e.printStackTrace();
-                            state_current = collectionState.FAILURE;
+                            if (listener != null)
+                                listener.onCompleteLectureList(false);
+                        } finally {
+                            breaker[0] = true;
                         }
+                    } else {
+                        breaker[0] = true;
+                        if (listener != null)
+                            listener.onCompleteLectureList(true);
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    state_current = collectionState.FAILURE;
+                    breaker[0] = true;
+                    if (listener != null)
+                        listener.onCompleteLectureList(false);
                 }
             });
 
-            while (state_current != collectionState.FAILURE) {
+            // wait for response
+            while (!breaker[0]) {
                 try { synchronized (this) { wait(100); } } catch (Exception ignored) {}
-                if (state_current == collectionState.LECTURE_LIST)
-                    break;
             }
-
-            try {
-                requestActivity();
-            } catch (JSONException ignored) {}
-
-            while (state_current != collectionState.FAILURE) {
-                try { synchronized (this) { wait(100); } } catch (Exception ignored) {}
-                if (num_request == 0)
-                    break;
-            }
-
-            state_current = collectionState.LECTURE_ACTIVITY;
-            updateHead();
         }
 
-        private void requestActivity() throws JSONException {
-            num_request = 0;
+        private void requestActivity() {
+            final int[] counter = {0};
 
-            for (Iterator<String> it = newHead.keys(); it.hasNext(); ) {
+            JSONObject lecture = null;
+
+            try {
+                lecture = new JSONObject(newHead.getString("lecture"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            for (Iterator<String> it = lecture.keys(); it.hasNext(); ) {
                 String key = it.next();
-                String link = new JSONObject(newHead.getString(key)).getString("link");
+                String link = null;
+                try {
+                    link = new JSONObject(lecture.getString(key)).getString("link");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    continue;
+                }
 
-                num_request++;
+                counter[0]++;
+                final JSONObject finalLecture = lecture;
                 api.getUri(link).enqueue(new Callback<ResponseBody>() {
                     public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            try {
-                                Document html = Jsoup.parse(response.body().string());
+                        if (!response.isSuccessful()) {
+                            counter[0]--;
+                            return;
+                        }
 
-                                HtmlParser parser = new HtmlParser(html);
-                                String link = parser.getClassAnnouncementLink();
-                                requestAnnouncement(key, link);
+                        try {
+                            Document html = Jsoup.parse(response.body().string());
 
-                                Element article = html.select(".section.main.clearfix.current").first();
+                            HtmlParser parser = new HtmlParser(html);
+                            String link = parser.getClassAnnouncementLink();
+                            requestAnnouncement(key, link);
 
-                                JSONObject data = new JSONObject();
+                            Element article = html.select(".section.main.clearfix.current").first();
 
-                                String title = article.select(".sectionname").text();
-                                data.put("current", title);
+                            JSONObject data = new JSONObject();
 
-                                Elements weeks = html
-                                        .select(".total_sections").first()
-                                        .select(".section.main.clearfix");
+                            String title = article.select(".sectionname").text();
+                            data.put("current", title);
 
-                                for (Element e : weeks) {
-                                    title = e.attr("aria-label");
-                                    data.put(title, parseContent(e));
-                                }
+                            Elements weeks = html.select(
+                                    ".total_sections .section.main.clearfix");
 
-                                synchronized(newHead) {
-                                    JSONObject lecture = new JSONObject(newHead.getString(key));
-                                    lecture.put("activity", data.toString());
-                                    newHead.put(key, lecture.toString());
-                                }
-                            } catch (JSONException | IOException e) {
-                                e.printStackTrace();
-                                state_current = collectionState.FAILURE;
-                            } finally { num_request--; }
+                            for (Element e : weeks) {
+                                title = e.attr("aria-label");
+                                data.put(title, parseContent(e));
+                            }
+
+                            synchronized(newHead) {
+                                finalLecture.put("activity", data.toString());
+                                newHead.put("lecture", finalLecture.toString());
+                            }
+                            updateHead();
+                            if (listener != null)
+                                listener.onCompleteActivity(true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (listener != null)
+                                listener.onCompleteActivity(false);
+                        } finally {
+                            counter[0]--;
+                            if (listener != null)
+                                listener.onCompleteActivity(false);
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                        state_current = collectionState.FAILURE;
-                        num_request--;
+                        counter[0]--;
+                        if (listener != null)
+                            listener.onCompleteActivity(false);
                     }
                 });
+            }
+
+            // wait for response
+            while (counter[0] != 0) {
+                try { synchronized (this) { wait(100); } } catch (Exception ignored) {}
             }
         }
 
@@ -283,9 +306,10 @@ public class ContentCollector {
         }
 
         private void requestAnnouncement(String key, String link) {
-            num_request++;
+            final int[] counter = {0};
+            counter[0]++;
 
-            MainActivity.api.getUri(link + "&ls=100").enqueue(new Callback<ResponseBody>() {
+            api.getUri(link + "&ls=100").enqueue(new Callback<ResponseBody>() {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         try {
@@ -302,21 +326,80 @@ public class ContentCollector {
                             }
 
                             synchronized (newHead) {
-                                JSONObject lecture = new JSONObject(newHead.getString(key));
-                                lecture.put("announcement", json.toString());
-                                newHead.put(key, lecture.toString());
+                                JSONObject lecture = new JSONObject(newHead.getString("lecture"));
+                                JSONObject lec_elem = new JSONObject(lecture.getString(key));
+                                lec_elem.put("announcement", json.toString());
+                                lecture.put(key, lec_elem.toString());
+                                newHead.put("lecture", lecture.toString());
                             }
                         } catch (Exception ignored) {
-                            state_current = collectionState.FAILURE;
-                        } finally { num_request--; }
+                        } finally { counter[0]--; }
                     }
                 }
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    state_current = collectionState.FAILURE;
-                    num_request--;
+                    counter[0]--;
                 }
             });
+        }
+
+        private void requestChatList() {
+            api.getUri("/local/ubmessage").enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call,
+                                       @NonNull Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject chat;
+                            if (newHead.has("chat"))
+                                chat = new JSONObject(newHead.getString("chat"));
+                            else
+                                chat = new JSONObject();
+
+                            Document html = Jsoup.parse(response.body().string());
+
+                            Elements list = html.select("li.media");
+                            for (Element e : list) {
+                                JSONObject json = new JSONObject();
+                                json.put("image",
+                                        e.select(".media-left img").attr("src"));
+                                json.put("title",
+                                        e.select(".media-heading").text());
+                                json.put("time",
+                                        e.select(".time").text());
+                                json.put("hint",
+                                        e.select(".msg").text());
+                                json.put("delete",
+                                        e.select("div.tools a").attr("href"));
+
+                                String link = e.select(".media-body a").attr("href");
+                                chat.put(link.split("&id=")[1], json);
+                            }
+                            synchronized (newHead) {
+                                newHead.put("chat", chat);
+                            }
+                            updateHead();
+
+                            if (listener != null)
+                                listener.onCompleteChatList(true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (listener != null)
+                                listener.onCompleteChatList(false);
+                        }
+                    } else {
+                        if (listener != null)
+                            listener.onCompleteChatList(false);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    if (listener != null)
+                        listener.onCompleteChatList(false);
+                }
+            });
+
         }
     }
 }

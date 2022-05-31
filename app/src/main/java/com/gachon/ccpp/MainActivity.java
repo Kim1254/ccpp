@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
@@ -25,9 +25,9 @@ import retrofit2.Response;
 
 import com.gachon.ccpp.api.UserManager;
 import com.gachon.ccpp.parser.ContentCollector;
+import com.gachon.ccpp.parser.ContentCollector.collectionListener;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;
-import com.gachon.ccpp.parser.TableForm;
 
 public class MainActivity extends AppCompatActivity {
     public static RetrofitClient retrofitClient;
@@ -50,11 +50,35 @@ public class MainActivity extends AppCompatActivity {
     private ChatFragment chat;
     private SettingFragment setting;
 
-    private ContentCollector collector;
-
     public ArrayList<ListForm> scheduleList;
 
     private String sourceId;
+
+    private static class chatListener extends collectionListener {
+        public Boolean lecture = null;
+        public Boolean activity = null;
+        public Boolean chat = null;
+
+        @Override
+        public void onCompleteLectureList(boolean success) {
+            super.onCompleteLectureList(success);
+            lecture = success;
+        }
+
+        @Override
+        public void onCompleteActivity(boolean success) {
+            super.onCompleteActivity(success);
+            activity = success;
+        }
+
+        @Override
+        public void onCompleteChatList(boolean success) {
+            super.onCompleteChatList(success);
+            chat = success;
+        }
+    }
+
+    private chatListener chat_listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         sourceId = intent.getStringExtra("id");
+
+        chat_listener = new chatListener();
+        ContentCollector.beginThread(chat_listener);
 
         bundle = new Bundle();
         bundle.putSerializable("courseList", intent.getSerializableExtra("courseList"));
@@ -83,8 +110,7 @@ public class MainActivity extends AppCompatActivity {
         setting = new SettingFragment();
 
         lecture.setArguments(bundle);
-
-        collector = new ContentCollector(getApplicationContext());
+        chat.setArguments(bundle);
 
         infoRequest();
 
@@ -194,5 +220,14 @@ public class MainActivity extends AppCompatActivity {
 
         transaction = fragManager.beginTransaction();
         transaction.replace(R.id.fragLayout, fragment).commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (ContentCollector.getObject("lecture") != null &&
+                ContentCollector.getObject("chat") != null)
+            ContentCollector.saveData(this);
     }
 }

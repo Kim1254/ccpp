@@ -21,18 +21,6 @@ public interface RetrofitAPI {
     );
 
     @Headers("Accept-Language: ko-KR,ko;q=0.9")
-    @GET("/user/user_edit.php")
-    Call<ResponseBody> info (
-            @Query("id") String id
-    );
-
-    @Headers("Accept-Language: ko-KR,ko;q=0.9")
-    @GET("/course/view.php")
-    Call<ResponseBody> course (
-            @Query("id") String id
-    );
-
-    @Headers("Accept-Language: ko-KR,ko;q=0.9")
     @GET("/local/ubion/setting/syllabus.php")
     Call<ResponseBody> syllabus (
             @Query("id") String id
@@ -48,6 +36,17 @@ public interface RetrofitAPI {
     @GET("/mod/assign/index.php")
     Call<ResponseBody> assignment (
             @Query("id") String id
+    );
+
+    @Headers("Accept-Language: ko-KR,ko;q=0.9")
+    @FormUrlEncoded
+    @POST("/local/ubmessage/action.php")
+    Call<ResponseBody> send_message (
+            @Field("type") String type,
+            @Field("sesskey") String sesskey,
+            @Field("to") String to,
+            @Field("returnurl") String returnurl,
+            @Field("message") String message
     );
 
     @Headers("Accept-Language: ko-KR,ko;q=0.9")

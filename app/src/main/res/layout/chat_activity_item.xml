@@ -36,4 +36,60 @@
         app:layout_constraintStart_toStartOf="@id/chat_item_nickname"
         app:layout_constraintTop_toBottomOf="@id/chat_item_nickname"/>
 
+    <ImageView
+        android:id="@+id/chat_item_ctx_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:padding="8dp"
+        android:visibility="invisible"
+        android:background="@drawable/style_roundrect"
+        android:backgroundTint="@color/gcc_liteblue"
+        app:layout_constraintStart_toStartOf="@id/chat_item_nickname"
+        app:layout_constraintTop_toBottomOf="@id/chat_item_nickname"/>
+
+    <ImageView
+        android:id="@+id/chat_item_image_me"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/style_oval"
+        android:src="@drawable/baseline_account_circle_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/chat_item_nickname_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample name"
+        android:textSize="16sp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toStartOf="@id/chat_item_image_me"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/chat_item_context_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample context"
+        android:layout_marginTop="4dp"
+        android:padding="8dp"
+        android:background="@drawable/style_roundrect"
+        android:backgroundTint="@color/gcc_orange"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/chat_item_nickname_me"
+        app:layout_constraintTop_toBottomOf="@id/chat_item_nickname_me"/>
+
+    <ImageView
+        android:id="@+id/chat_item_ctx_img_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:visibility="invisible"
+        android:padding="8dp"
+        android:background="@drawable/style_roundrect"
+        android:backgroundTint="@color/gcc_orange"
+        app:layout_constraintEnd_toEndOf="@id/chat_item_nickname_me"
+        app:layout_constraintTop_toBottomOf="@id/chat_item_nickname_me"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

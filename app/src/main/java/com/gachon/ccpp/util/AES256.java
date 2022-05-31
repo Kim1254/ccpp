@@ -11,10 +11,9 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 // Referenced: https://bamdule.tistory.com/234
-// This encryption has no purpose now. Try to use this if you want.
 
 public class AES256 {
-    public static String alg = "AES/CBC/PKCS5Padding";
+    public final String alg = "AES/CBC/PKCS5Padding";
     private final String key = "01234567890123456789012345678901";
     private final String iv = key.substring(0, 16); // 16byte
 
