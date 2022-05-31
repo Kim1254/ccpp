@@ -46,4 +46,7 @@
     <string name="ChatActivity_submit">Submit</string>
     <string name="DeadlineActivity_Context_Empty">No activity</string>
 
+    <string name="ChatActivity_Hint">Message Input</string>
+    <string name="ChatActivity_Hint_Unable">Unable to chat in group chat</string>
+
 </resources>

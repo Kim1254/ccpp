@@ -159,6 +159,7 @@ public class ChatFragment extends Fragment {
 
         it.putExtra("title", item.title);
         it.putExtra("link", item.link);
+        it.putExtra("image", item.img_url);
 
         startActivity(it);
     }

@@ -6,30 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".ChatActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/my_recycler_view"
+    <GridView
+        android:id="@+id/grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/style_rect"
+        android:layout_height="570dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="48dp"
+        android:numColumns="1"
+        android:verticalSpacing="12dp"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnSend"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnSend"
+        android:id="@+id/btn_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/ChatActivity_submit"/>
 
     <EditText
+        android:id="@+id/edit_text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnSend"
+        android:layout_height="36dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/style_roundrect"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:hint="@string/ChatActivity_Hint_Unable"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/etText"
-        />
+        app:layout_constraintEnd_toStartOf="@id/btn_send"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_send" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

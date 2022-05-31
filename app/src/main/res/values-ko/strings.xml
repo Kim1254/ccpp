@@ -43,4 +43,10 @@
 
     <string name="LectureActivity_assignment">과제</string>
 
+    <string name="ChatActivity_submit">전송</string>
+    <string name="DeadlineActivity_Context_Empty">예정된 활동 없음</string>
+
+    <string name="ChatActivity_Hint">메세지 작성하기</string>
+    <string name="ChatActivity_Hint_Unable">단체 채팅방에서는 이용할 수 없습니다</string>
+
 </resources>

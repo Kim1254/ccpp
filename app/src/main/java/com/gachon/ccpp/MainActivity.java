@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private UserManager userManager;
 
     private FragmentManager fragManager;
-    private FragmentTransaction transaction;
 
     private LectureFragment lecture;
     private ScheduleFragment schedule;
@@ -147,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
                         for (ListForm l : monthList)
                             requestDaySchedule(l.date, l.link);
-                    } catch (Exception ignored) { }
+                    } catch (Exception e) { e.printStackTrace(); }
                 }
             }
             @Override
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                         Collections.sort(scheduleList, (f1, f2) -> {
                             return Integer.valueOf(f1.date).compareTo(Integer.valueOf(f2.date));
                         });
-                    } catch (Exception ignored) { }
+                    } catch (Exception e) { e.printStackTrace(); }
                 }
             }
             @Override
@@ -193,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         parser.setHtml(Jsoup.parse(response.body().string()));
                         makeConnection(parser.getStudentInfo().get(0));
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     } finally {
                         privateDialog.hide();
                         deployFragment(R.string.MainFragment_Lecture_Title, lecture);
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
         getSupportActionBar().show();
 
-        transaction = fragManager.beginTransaction();
+        FragmentTransaction transaction = fragManager.beginTransaction();
         transaction.replace(R.id.fragLayout, fragment).commit();
     }
 
