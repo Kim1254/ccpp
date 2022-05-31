@@ -38,20 +38,17 @@ public class ContentCollector {
 
     public enum collectionState { FAILURE, BEGIN, LECTURE_LIST, LECTURE_ACTIVITY };
 
-    private JSONObject head = null;
+    public JSONObject head = null;
+    private collectionState state_head = collectionState.FAILURE;
 
     private final Context ctx;
-
-    private collectionState state_head = collectionState.FAILURE;
 
     public ContentCollector(Context ctx) {
         retrofitClient = RetrofitClient.getInstance();
         api = RetrofitClient.getRetrofitInterface();
 
         this.ctx = ctx;
-
-        if (!loadData())
-            refresh();
+        refresh();
     }
 
     public void refresh() {
@@ -85,7 +82,7 @@ public class ContentCollector {
             DataOutputStream dos = new DataOutputStream(fos);
 
             dos.writeUTF(state_head.toString());
-            dos.writeUTF(head.toString());
+            dos.write(head.toString().getBytes());
 
             dos.flush();
             dos.close();
@@ -107,7 +104,6 @@ public class ContentCollector {
 
     private class collectionTask extends Thread {
         private final JSONObject newHead = new JSONObject();
-        private final JSONObject newContext = new JSONObject();
 
         collectionState state_current;
 
@@ -117,19 +113,13 @@ public class ContentCollector {
             state_current = collectionState.BEGIN;
         }
 
-        public void updateHead() {
-            if (state_head.compareTo(state_current) < 0) {
-                head = newHead;
-                state_head = state_current;
-                saveData();
-            }
-        }
+        public synchronized void updateHead() {
+            if (state_current.compareTo(state_head) < 0)
+                return;
 
-        public void updateContext() {
-            if (state_head.compareTo(state_current) < 0) {
-                state_head = state_current;
-                saveData();
-            }
+            head = newHead;
+            state_head = state_current;
+            saveData();
         }
 
         public void run() {
@@ -169,6 +159,7 @@ public class ContentCollector {
             });
 
             while (state_current != collectionState.FAILURE) {
+                try { synchronized (this) { wait(100); } } catch (Exception ignored) {}
                 if (state_current == collectionState.LECTURE_LIST)
                     break;
             }
@@ -178,6 +169,7 @@ public class ContentCollector {
             } catch (JSONException ignored) {}
 
             while (state_current != collectionState.FAILURE) {
+                try { synchronized (this) { wait(100); } } catch (Exception ignored) {}
                 if (num_request == 0)
                     break;
             }
@@ -191,11 +183,10 @@ public class ContentCollector {
 
             for (Iterator<String> it = newHead.keys(); it.hasNext(); ) {
                 String key = it.next();
-                JSONObject lecture = new JSONObject(newHead.getString(key));
+                String link = new JSONObject(newHead.getString(key)).getString("link");
 
                 num_request++;
-                api.getUri(lecture.getString("link"))
-                        .enqueue(new Callback<ResponseBody>() {
+                api.getUri(link).enqueue(new Callback<ResponseBody>() {
                     public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             try {
@@ -221,8 +212,9 @@ public class ContentCollector {
                                     data.put(title, parseContent(e));
                                 }
 
-                                lecture.put("activity", data.toString());
                                 synchronized(newHead) {
+                                    JSONObject lecture = new JSONObject(newHead.getString(key));
+                                    lecture.put("activity", data.toString());
                                     newHead.put(key, lecture.toString());
                                 }
                             } catch (JSONException | IOException e) {
@@ -290,16 +282,14 @@ public class ContentCollector {
             return head.toString();
         }
 
-        private void requestAnnouncement(String key, String link) throws JSONException {
+        private void requestAnnouncement(String key, String link) {
             num_request++;
-
-            JSONObject lecture = new JSONObject(newHead.getString(key));
-            JSONObject json = new JSONObject();
 
             MainActivity.api.getUri(link + "&ls=100").enqueue(new Callback<ResponseBody>() {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         try {
+                            JSONObject json = new JSONObject();
                             HtmlParser parser = new HtmlParser(Jsoup.parse(response.body().string()));
                             ArrayList<ListForm> announcementLink = parser.getCourseAnnouncementList();
 
@@ -311,8 +301,9 @@ public class ContentCollector {
                                 json.put(l.title, child);
                             }
 
-                            lecture.put("announcement", json.toString());
                             synchronized (newHead) {
+                                JSONObject lecture = new JSONObject(newHead.getString(key));
+                                lecture.put("announcement", json.toString());
                                 newHead.put(key, lecture.toString());
                             }
                         } catch (Exception ignored) {
@@ -326,54 +317,6 @@ public class ContentCollector {
                     num_request--;
                 }
             });
-        }
-
-        private void requestContext() throws JSONException {
-            num_request = 0;
-
-            for (Iterator<String> it = newHead.keys(); it.hasNext(); ) {
-                String key = it.next();
-                JSONObject lec = new JSONObject(newHead.getString(key));
-
-                if (lec.has("activity")) {
-                    JSONObject activity = new JSONObject(lec.getString("activity"));
-
-                    for (Iterator<String> iter = activity.keys(); iter.hasNext(); ) {
-                        String child_key = iter.next();
-                        if (child_key.contentEquals("current"))
-                            continue;
-
-                        JSONObject child = new JSONObject(activity.getString(child_key));
-
-                        for (Iterator<String> itera = child.keys(); itera.hasNext(); ) {
-                            String child_key2 = itera.next();
-                            JSONObject child2 = new JSONObject(child.getString(child_key2));
-
-                            if (!child2.has("link"))
-                                continue;
-
-                            String path = key + "\\/*activity\\/*" + child_key + "\\/*" + child_key2;
-                            //requestAssContext(path, child2.getString("link"));
-                        }
-                    }
-                }
-
-                if (lec.has("announcement")) {
-                    JSONObject announcement = new JSONObject(lec.getString("announcement"));
-                    for (Iterator<String> iter = announcement.keys(); iter.hasNext(); ) {
-                        String child_key = iter.next();
-                        JSONObject child = new JSONObject(announcement.getString(child_key));
-
-                        if (!child.has("link"))
-                            continue;
-
-                        String path = key + "\\/*announcement\\/*" + child_key;
-                        //requestAnnContext(path, child.getString("link"));
-                    }
-                }
-            }
-
-            Log.d("CCPP", "request ends.");
         }
     }
 }
