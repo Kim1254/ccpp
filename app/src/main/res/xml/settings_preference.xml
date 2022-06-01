@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="알림">
+    <PreferenceCategory android:title="알림 설정">
         <SwitchPreference
             android:key="notification_alarm"
             android:title="공지사항 알림" />
