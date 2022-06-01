@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="알림">
+        <SwitchPreference
+            android:key="notification_alarm"
+            android:title="공지사항 알림" />
+
+        <SwitchPreference
+            android:key="assignment_alarm"
+            android:title="과제 알림" />
+
+        <SwitchPreference
+            android:key="comment_alarm"
+            android:title="코멘트 알림" />
+
+    </PreferenceCategory>
+
+    <ListPreference
+        android:entries="@array/language_values"
+        android:entryValues="@array/language_values"
+        android:key="language_list"
+        android:summary="한국어"
+        android:title="언어 설정" />
+
+</PreferenceScreen>
