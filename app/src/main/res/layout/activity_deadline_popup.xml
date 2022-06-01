@@ -20,51 +20,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <View
-        android:background="#66bdbdbd"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/daily_assignment"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/content" />
-
-    <TextView
-        android:id="@+id/empty_content"
-        android:textSize="15sp"
-        android:alpha="0.9"
-        android:gravity="center"
-        android:layout_marginBottom="3dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/DeadlineActivity_Context_Empty"
-        android:visibility="invisible"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:layout_constraintBottom_toTopOf="@id/close_btn" />
-
-    <GridView
-        android:id="@+id/content"
-        android:padding="24dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:visibility="invisible"
-        android:numColumns="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:layout_constraintBottom_toTopOf="@id/close_btn"/>
-
-    <View
-        android:background="#66bdbdbd"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/close_btn" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/close_btn"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
     <Button
         android:id="@+id/close_btn"
