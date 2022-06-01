@@ -1,10 +1,13 @@
 package com.gachon.ccpp;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -14,15 +17,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.gachon.ccpp.parser.ListForm;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
 
 public class ScheduleFragment extends Fragment {
+    public Map<Integer,ArrayList<ListForm>> scheduleList;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        scheduleList = (Map<Integer,ArrayList<ListForm>>) bundle.getSerializable("schedule");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,8 +54,11 @@ public class ScheduleFragment extends Fragment {
         MaterialCalendarView cal = view.findViewById(R.id.calendar);
         cal.setSelectionColor(
                 ResourcesCompat.getColor(getResources(), R.color.gcc_green, null));
-        cal.setSelectedDate(CalendarDay.today());
 
+        for(Integer key : scheduleList.keySet()) {
+            CalendarDay calendarDay = CalendarDay.from(LocalDateTime.now().getYear(),LocalDateTime.now().getMonthValue()-1,key);
+            cal.addDecorator(new EventDecorator(Color.RED, Collections.singleton(calendarDay)));
+        }
 
         cal.addDecorators(
                 new DateDecorator(Calendar.SATURDAY,
@@ -45,13 +70,8 @@ public class ScheduleFragment extends Fragment {
         cal.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                String date_str = date.toString();
-                int index_a = date_str.indexOf("{");
-                int index_b = date_str.indexOf("}");
-                String deadline = date_str.substring(index_a+1, index_b);
-                Toast.makeText(getContext(), "선택한 날짜는 " + deadline, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), DeadlinePopupActivity.class);
-                intent.putExtra("date", deadline);
+                intent.putExtra("schedule",(Serializable) scheduleList.get(date.getDay()));
                 startActivity(intent);
             }
         });
@@ -82,6 +102,25 @@ public class ScheduleFragment extends Fragment {
         }
     }
 
+    public class EventDecorator implements DayViewDecorator {
 
+        private final int color;
+        private final HashSet<CalendarDay> dates;
+
+        public EventDecorator(int color, Collection<CalendarDay> dates) {
+            this.color = color;
+            this.dates = new HashSet<>(dates);
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            return dates.contains(day);
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new DotSpan(10, color));
+        }
+    }
 
 }

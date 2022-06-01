@@ -15,8 +15,11 @@ import com.gachon.ccpp.network.RetrofitClient;
 
 import org.jsoup.Jsoup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     LoadingDialog privateDialog;
 
-    Bundle bundle;
+    Bundle bundle = new Bundle();
 
     private UserManager userManager;
 
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private ChatFragment chat;
     private SettingFragment setting;
 
-    public ArrayList<ListForm> scheduleList;
+    public Map<Integer,ArrayList<ListForm>> scheduleList;
 
     private String sourceId;
 
@@ -115,13 +118,17 @@ public class MainActivity extends AppCompatActivity {
 
         infoRequest();
 
-        scheduleList = new ArrayList<>();
+        scheduleList = new HashMap<>();
         requestSchedule();
 
         findViewById(R.id.footer_lecture).setOnClickListener(view ->
                 deployFragment(R.string.MainFragment_Lecture_Title, lecture));
-        findViewById(R.id.footer_schedule).setOnClickListener(view ->
-                deployFragment(R.string.MainFragment_Schedule_Title, schedule));
+        findViewById(R.id.footer_schedule).setOnClickListener(view -> {
+                bundle = new Bundle();
+                bundle.putSerializable("schedule", (Serializable) scheduleList);
+                schedule.setArguments(bundle);
+                deployFragment(R.string.MainFragment_Schedule_Title, schedule);
+        });
         findViewById(R.id.footer_alarm).setOnClickListener(view ->
                 deployFragment(R.string.MainFragment_Alarm_Title, alarm));
         findViewById(R.id.footer_chat).setOnClickListener(view ->
@@ -168,13 +175,10 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<ListForm> dayList = parser.getDayList();
 
                         for (ListForm l : dayList){
-                            l.date = day;
-                            scheduleList.add(l);
+                            if(scheduleList.get(Integer.valueOf(day))==null)
+                                scheduleList.put(Integer.valueOf(day), new ArrayList<ListForm>());
+                            scheduleList.get(Integer.valueOf(day)).add(l);
                         }
-
-                        Collections.sort(scheduleList, (f1, f2) -> {
-                            return Integer.valueOf(f1.date).compareTo(Integer.valueOf(f2.date));
-                        });
                     } catch (Exception e) { e.printStackTrace(); }
                 }
             }

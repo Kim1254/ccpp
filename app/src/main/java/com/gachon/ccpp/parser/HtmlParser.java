@@ -54,23 +54,19 @@ public class HtmlParser {
     //title - 과제이름
     //writer - 강의이름
     //payload - 설명
+    //팝업에서 프래그먼트로 바꾸는건 무리같아서 링크를 과감하게 지우고 시간을 넣음
     public  ArrayList<ListForm> getDayList(){
         Elements selected = html.select( ".eventlist .event");
         ArrayList<ListForm> data = new ArrayList<ListForm>();
         for(Element e: selected){
             String a = e.select("img").attr("title");
             if(a.compareTo("과제")!=0)continue;
-            Elements temp = e.select(".description");
-            temp.select("br").before("\\n");
-            temp.select("p").before("\\n");
-            String text = temp.html().replaceAll("\\\\n","\n");
-            text = Jsoup.clean(text,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replaceAll("&nbsp;"," ");
             data.add(new ListForm(
                     e.select(".referer a").text(),
                     "",
                     e.select(".course a").text(),
-                    e.select(".referer a").attr("href"),
-                    text));
+                    e.select(".date").text(),
+                    e.select(".description").toString()));
         }
         return data;
     }
