@@ -16,13 +16,7 @@
             android:name=".DeadlinePopupActivity"
             android:theme="@android:style/Theme.Dialog"/>
         <activity
-            android:name=".AnnouncementActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LectureActivity"
             android:exported="false" />
         <activity
             android:name=".ChatActivity"

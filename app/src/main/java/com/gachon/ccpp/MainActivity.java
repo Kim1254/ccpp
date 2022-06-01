@@ -28,6 +28,7 @@ import com.gachon.ccpp.parser.ContentCollector;
 import com.gachon.ccpp.parser.ContentCollector.collectionListener;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;
+import com.gachon.ccpp.parser.TableForm;
 
 public class MainActivity extends AppCompatActivity {
     public static RetrofitClient retrofitClient;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private UserManager userManager;
 
     private FragmentManager fragManager;
+    private FragmentTransaction transaction;
 
     private LectureFragment lecture;
     private ScheduleFragment schedule;
@@ -218,8 +220,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
         getSupportActionBar().show();
 
-        FragmentTransaction transaction = fragManager.beginTransaction();
-        transaction.replace(R.id.fragLayout, fragment).commit();
+        transaction = fragManager.beginTransaction();
+        transaction.replace(R.id.fragLayout, fragment).addToBackStack(null).commit();
     }
 
     @Override
