@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.schedule;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,11 +8,12 @@ import android.os.Bundle;
 import android.view.Window;
 import android.widget.Button;
 
+import com.gachon.ccpp.R;
 import com.gachon.ccpp.parser.ListForm;
 
 import java.util.ArrayList;
 
-public class DeadlinePopupActivity extends Activity {
+public class PopupActivity extends Activity {
     RecyclerView recyclerView;
     PopUpAdapter adapter;
     private ArrayList<ListForm> schedule;

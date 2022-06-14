@@ -8,7 +8,7 @@ import java.util.Map;
 public class TableForm implements Serializable {
     public ArrayList<Map<Integer,String>> table;
 
-    TableForm(){
+    public TableForm(){
         table = new ArrayList<>();
     }
     TableForm(ArrayList<Map<Integer,String>> table){

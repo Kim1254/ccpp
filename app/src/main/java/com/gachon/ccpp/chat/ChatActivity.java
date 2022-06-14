@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.chat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gachon.ccpp.dialog.LoginDialog;
+import com.gachon.ccpp.MainActivity;
+import com.gachon.ccpp.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
-    private LoadingDialog privateDialog;
+    private LoginDialog privateDialog;
     private JSONObject info_send = null;
 
     private Button sendBtn;
@@ -53,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        privateDialog = new LoadingDialog(this);
+        privateDialog = new LoginDialog(this);
 
         Intent intent = getIntent();
         if (intent != null) {

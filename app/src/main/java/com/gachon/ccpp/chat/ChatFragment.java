@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.chat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gachon.ccpp.R;
+import com.gachon.ccpp.chat.ChatActivity;
 import com.gachon.ccpp.parser.ContentCollector;
 
 import org.json.JSONException;

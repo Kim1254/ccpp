@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.schedule;
 
 import android.animation.ValueAnimator;
 import android.text.Html;
@@ -6,14 +6,14 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gachon.ccpp.parser.ContentForm;
+import com.gachon.ccpp.listener.OnViewHolderItemClickListener;
+import com.gachon.ccpp.R;
 import com.gachon.ccpp.parser.ListForm;
 
 import java.util.ArrayList;

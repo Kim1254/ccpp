@@ -113,7 +113,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:text="TextView"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/assignment_fragment_content"
                 app:layout_constraintTop_toBottomOf="@+id/index_team" />
@@ -124,7 +123,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="TextView"
                 app:layout_constraintEnd_toEndOf="@+id/assignment_fragment_content"
                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
@@ -134,7 +132,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="TextView"
                 app:layout_constraintEnd_toEndOf="@+id/assignment_fragment_content"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
@@ -144,7 +141,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="TextView"
                 app:layout_constraintEnd_toEndOf="@+id/assignment_fragment_content"
                 app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
@@ -154,7 +150,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="TextView"
                 app:layout_constraintEnd_toEndOf="@+id/assignment_fragment_content"
                 app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
@@ -164,7 +159,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="TextView"
                 app:layout_constraintEnd_toEndOf="@+id/assignment_fragment_content"
                 app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
@@ -194,7 +188,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="right"
-                    android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
@@ -203,7 +196,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="TextView"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/index_comment" />
@@ -214,7 +206,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="right"
-                    android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/feedback_grade" />
 
@@ -224,7 +215,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="right"
-                    android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/feedback_graded_on" />
 

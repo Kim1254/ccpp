@@ -1,16 +1,12 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.grade;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,22 +16,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gachon.ccpp.OnViewHolderItemClickListener;
+import com.gachon.ccpp.listener.OnViewHolderItemClickListener;
 import com.gachon.ccpp.R;
-import com.gachon.ccpp.parser.ContentForm;
+import com.gachon.ccpp.lecture.assignment.AssignmentFragment;
 import com.gachon.ccpp.parser.TableForm;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class GradeAdapter extends RecyclerView.Adapter<GradeAdapter.GradeViewHolder> {
     // 해당 어댑터의 ViewHolder를 상속받는다.
     private TableForm list;
-    private Map<Integer,TableForm> assignment;
     private Context context;
 
-    public GradeAdapter(TableForm list, Map<Integer,TableForm> assignment, Context context) {
-        this.assignment = assignment;
+    public GradeAdapter(TableForm list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -58,7 +51,7 @@ public class GradeAdapter extends RecyclerView.Adapter<GradeAdapter.GradeViewHol
             public void onViewHolderItemClick() {
                 AssignmentFragment assignmentFragment = new AssignmentFragment();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("assignment",assignment.get(holder.getAdapterPosition()));
+                bundle.putString("link",list.table.get(holder.getAdapterPosition()).get(1));
                 assignmentFragment.setArguments(bundle);
                 deployFragment(assignmentFragment);
             }
@@ -69,9 +62,10 @@ public class GradeAdapter extends RecyclerView.Adapter<GradeAdapter.GradeViewHol
     public int getItemCount() {
         return list.table.size(); // 전체 데이터의 개수 조회
     }
-    public void addItem(Map data) {
+    public void changeItem(TableForm data) {
         // 외부에서 item을 추가시킬 함수입니다.
-        list.table.add(data);
+        list = data;
+        notifyDataSetChanged();
     }
 
     // 아이템 뷰를 저장하는 클래스

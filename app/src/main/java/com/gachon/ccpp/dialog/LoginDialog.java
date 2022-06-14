@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -7,17 +7,18 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.gachon.ccpp.R;
 
-public class LoadingDialog extends Dialog
+public class LoginDialog extends Dialog
 {
     LottieAnimationView animationView;
     TextView loadingText;
 
-    public LoadingDialog(Context context)
+    public LoginDialog(Context context)
     {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.loading_dialog);
+        setContentView(R.layout.login_dialog);
 
         animationView = findViewById(R.id.animation);
         loadingText = findViewById(R.id.loading_text);
