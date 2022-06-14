@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gachon.ccpp.dialog.LoginDialog;
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
 import com.gachon.ccpp.parser.HtmlParser;
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox autoLogin;
 
     TextView description;
-    LoadingDialog privateDialog;
+    LoginDialog privateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         autoLogin = findViewById(R.id.auto_login);
 
         description = findViewById(R.id.login_desc);
-        privateDialog = new LoadingDialog(this);
+        privateDialog = new LoginDialog(this);
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getString("username",null)!=null) {
             tryGetCookie(PreferenceManager.getDefaultSharedPreferences(this).getString("username",null),

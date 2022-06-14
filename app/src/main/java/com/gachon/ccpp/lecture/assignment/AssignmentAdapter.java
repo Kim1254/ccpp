@@ -18,7 +18,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gachon.ccpp.LoadingDialog;
+import com.gachon.ccpp.dialog.LoginDialog;
 import com.gachon.ccpp.listener.OnViewHolderItemClickListener;
 import com.gachon.ccpp.R;
 import com.gachon.ccpp.parser.TableForm;
@@ -28,11 +28,9 @@ import java.util.Map;
 public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.AssignmentViewHolder> {
     // 해당 어댑터의 ViewHolder를 상속받는다.
     private TableForm list;
-    private Map<Integer,TableForm> assignment;
     private Context context;
 
-    public AssignmentAdapter(TableForm list,Map<Integer,TableForm> assignment,Context context) {
-        this.assignment = assignment;
+    public AssignmentAdapter(TableForm list,Context context) {
         this.list = list;
         this.context = context;
     }
@@ -54,8 +52,7 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
             public void onViewHolderItemClick() {
                 AssignmentFragment assignmentFragment = new AssignmentFragment();
                 Bundle bundle = new Bundle();
-                cheakDataLoaded(holder.getAdapterPosition());
-                bundle.putSerializable("assignment",assignment.get(holder.getAdapterPosition()));
+                bundle.putString("link",list.table.get(holder.getAdapterPosition()).get(2));
                 assignmentFragment.setArguments(bundle);
                 deployFragment(assignmentFragment);
             }
@@ -66,9 +63,10 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
     public int getItemCount() {
         return list.table.size(); // 전체 데이터의 개수 조회
     }
-    public void addItem(Map data) {
+    public void changeItem(TableForm data) {
         // 외부에서 item을 추가시킬 함수입니다.
-        list.table.add(data);
+        list = data;
+        notifyDataSetChanged();
     }
 
     // 아이템 뷰를 저장하는 클래스
@@ -127,20 +125,6 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
         FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragLayout, fragment).addToBackStack(null).commit();
-    }
-
-
-    public void cheakDataLoaded(int position){
-        LoadingDialog dialog = new LoadingDialog(context);
-        dialog.show();
-        while (assignment.get(position)==null){
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        dialog.dismiss();
     }
 
 }

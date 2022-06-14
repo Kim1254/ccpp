@@ -17,6 +17,7 @@ import com.gachon.ccpp.R;
 import com.gachon.ccpp.parser.ContentForm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapter.AnnouncementViewHolder> {
     // 해당 어댑터의 ViewHolder를 상속받는다.
@@ -71,6 +72,8 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
     public void addItem(ContentForm data) {
         // 외부에서 item을 추가시킬 함수입니다.
         list.add(data);
+        Collections.sort(list, (a, b) -> Integer.valueOf(b.payload)- Integer.valueOf(a.payload));
+        notifyDataSetChanged();
     }
 
     // 아이템 뷰를 저장하는 클래스
