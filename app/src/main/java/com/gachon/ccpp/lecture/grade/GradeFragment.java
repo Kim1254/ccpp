@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.grade;
 
 import static com.gachon.ccpp.MainActivity.api;
 
@@ -14,9 +14,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.gachon.ccpp.R;
+import com.gachon.ccpp.listener.onBackPressedListener;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.TableForm;
-import com.google.android.material.tabs.TabLayout;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,9 +31,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AssignmentListFragment extends Fragment implements onBackPressedListener{
+public class GradeFragment extends Fragment implements onBackPressedListener {
     RecyclerView recyclerView;
-    AssignmentAdapter adapter;
+    GradeAdapter adapter;
     TableForm list;
     Map<Integer,TableForm> assignment;
 
@@ -55,7 +56,7 @@ public class AssignmentListFragment extends Fragment implements onBackPressedLis
         recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
 
-        adapter = new AssignmentAdapter(list,assignment,getContext());
+        adapter = new GradeAdapter(list,assignment,getContext());
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -64,7 +65,7 @@ public class AssignmentListFragment extends Fragment implements onBackPressedLis
     public void requestAssignment(){
         int i =0;
         for(Map<Integer,String> row : list.table){
-            requestContent(row.get(2),i);
+            requestContent(row.get(1),i);
             i = i+1;
         }
     }

@@ -13,13 +13,13 @@
         android:theme="@style/Theme.Ccpp">
 
         <activity
-            android:name=".DeadlinePopupActivity"
+            android:name=".schedule.PopupActivity"
             android:theme="@android:style/Theme.Dialog"/>
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ChatActivity"
+            android:name=".chat.ChatActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

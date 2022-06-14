@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.chat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gachon.ccpp.LoadingDialog;
+import com.gachon.ccpp.MainActivity;
+import com.gachon.ccpp.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

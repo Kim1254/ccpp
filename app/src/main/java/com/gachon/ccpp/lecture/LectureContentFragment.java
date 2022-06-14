@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,8 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.gachon.ccpp.MainActivity;
+import com.gachon.ccpp.R;
+import com.gachon.ccpp.lecture.announcement.AnnouncementFragment;
+import com.gachon.ccpp.lecture.assignment.AssignmentListFragment;
+import com.gachon.ccpp.lecture.grade.GradeFragment;
+import com.gachon.ccpp.lecture.syllabus.SyllabusFragment;
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
+import com.gachon.ccpp.listener.onBackPressedListener;
 import com.gachon.ccpp.parser.ContentForm;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;

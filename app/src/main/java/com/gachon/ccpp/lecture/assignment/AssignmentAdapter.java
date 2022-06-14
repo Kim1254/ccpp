@@ -1,18 +1,13 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.assignment;
 
-import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,13 +18,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.load.engine.Resource;
-import com.gachon.ccpp.OnViewHolderItemClickListener;
+import com.gachon.ccpp.LoadingDialog;
+import com.gachon.ccpp.listener.OnViewHolderItemClickListener;
 import com.gachon.ccpp.R;
-import com.gachon.ccpp.parser.ContentForm;
 import com.gachon.ccpp.parser.TableForm;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.AssignmentViewHolder> {
@@ -61,6 +54,7 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
             public void onViewHolderItemClick() {
                 AssignmentFragment assignmentFragment = new AssignmentFragment();
                 Bundle bundle = new Bundle();
+                cheakDataLoaded(holder.getAdapterPosition());
                 bundle.putSerializable("assignment",assignment.get(holder.getAdapterPosition()));
                 assignmentFragment.setArguments(bundle);
                 deployFragment(assignmentFragment);
@@ -135,5 +129,18 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
         transaction.replace(R.id.fragLayout, fragment).addToBackStack(null).commit();
     }
 
+
+    public void cheakDataLoaded(int position){
+        LoadingDialog dialog = new LoadingDialog(context);
+        dialog.show();
+        while (assignment.get(position)==null){
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        dialog.dismiss();
+    }
 
 }

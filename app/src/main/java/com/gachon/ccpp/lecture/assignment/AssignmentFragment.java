@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.assignment;
 
 import android.os.Bundle;
 import android.text.Html;
@@ -12,9 +12,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.gachon.ccpp.R;
+import com.gachon.ccpp.listener.onBackPressedListener;
 import com.gachon.ccpp.parser.TableForm;
 
-public class AssignmentFragment extends Fragment implements onBackPressedListener{
+public class AssignmentFragment extends Fragment implements onBackPressedListener {
     TableForm assignment;
 
     @Nullable

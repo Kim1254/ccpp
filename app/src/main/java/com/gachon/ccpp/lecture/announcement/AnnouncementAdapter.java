@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.announcement;
 
 import android.animation.ValueAnimator;
 import android.text.Html;
@@ -10,36 +10,36 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.gachon.ccpp.listener.OnViewHolderItemClickListener;
+import com.gachon.ccpp.R;
 import com.gachon.ccpp.parser.ContentForm;
-import com.gachon.ccpp.parser.ListForm;
 
 import java.util.ArrayList;
 
-public class PopUpAdapter extends RecyclerView.Adapter<PopUpAdapter.PopUpViewHolder> {
+public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapter.AnnouncementViewHolder> {
     // 해당 어댑터의 ViewHolder를 상속받는다.
-    private ArrayList<ListForm> list;
+    private ArrayList<ContentForm> list;
 
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     private int prePosition = -1;
 
-    public PopUpAdapter(ArrayList<ListForm> list) {
+    public AnnouncementAdapter(ArrayList<ContentForm> list) {
         this.list = list;
     }
 
     @Override
-    public PopUpViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AnnouncementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // ViewHodler 객체를 생성 후 리턴한다.
-        return new PopUpViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_item, parent, false));
+        return new AnnouncementViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.announcement_item, parent, false));
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PopUpViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AnnouncementViewHolder holder, int position) {
         // ViewHolder 가 재활용 될 때 사용되는 메소드
-        PopUpViewHolder viewHolder = (PopUpViewHolder)holder;
+        AnnouncementViewHolder viewHolder = (AnnouncementViewHolder)holder;
         viewHolder.onBind(list.get(holder.getAdapterPosition()),position, selectedItems);
         int pos = holder.getAdapterPosition();
         // 뷰홀더에 아이템클릭리스너 인터페이스 붙이기
@@ -68,32 +68,34 @@ public class PopUpAdapter extends RecyclerView.Adapter<PopUpAdapter.PopUpViewHol
     public int getItemCount() {
         return list.size(); // 전체 데이터의 개수 조회
     }
-    public void addItem(ListForm data) {
+    public void addItem(ContentForm data) {
         // 외부에서 item을 추가시킬 함수입니다.
         list.add(data);
     }
 
     // 아이템 뷰를 저장하는 클래스
-    public class PopUpViewHolder extends RecyclerView.ViewHolder {
+    public class AnnouncementViewHolder extends RecyclerView.ViewHolder {
         // ViewHolder 에 필요한 데이터들을 적음.
         private TextView title;
         private TextView writer;
         private TextView date;
+        private TextView num;
         private TextView content;
         private TextView height;
 
         OnViewHolderItemClickListener onViewHolderItemClickListener;
 
-        private ConstraintLayout layout;
-        PopUpViewHolder(@NonNull View itemView) {
+        private LinearLayout layout;
+        AnnouncementViewHolder(@NonNull View itemView) {
             super(itemView);
             // 아이템 뷰에 필요한 View
-            title = itemView.findViewById(R.id.popup_title);
-            writer = itemView.findViewById(R.id.popup_writer);
-            date = itemView.findViewById(R.id.popup_time);
-            content = itemView.findViewById(R.id.popup_content);
-            height = itemView.findViewById(R.id.popup_height);
-            layout = itemView.findViewById(R.id.popup_layout);
+            title = itemView.findViewById(R.id.announcement_title);
+            writer = itemView.findViewById(R.id.announcement_writer);
+            date = itemView.findViewById(R.id.announcement_date);
+            num = itemView.findViewById(R.id.announcement_num);
+            content = itemView.findViewById(R.id.announcement_content);
+            height = itemView.findViewById(R.id.height);
+            layout = itemView.findViewById(R.id.announcement_item);
 
             layout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -103,11 +105,12 @@ public class PopUpAdapter extends RecyclerView.Adapter<PopUpAdapter.PopUpViewHol
             });
         }
 
-        public void onBind(ListForm data, int position, SparseBooleanArray selectedItems){
+        public void onBind(ContentForm data, int position, SparseBooleanArray selectedItems){
             title.setText(data.title);
             writer.setText(data.writer);
-            date.setText(data.link);
-            content.setText(Html.fromHtml(data.payload));
+            date.setText(data.date);
+            num.setText(data.payload);
+            content.setText(Html.fromHtml(data.content));
             content.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             int heightValue = content.getMeasuredHeight();
             height.setText(String.valueOf(heightValue));

@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.announcement;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,13 +11,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.gachon.ccpp.R;
+import com.gachon.ccpp.listener.onBackPressedListener;
 import com.gachon.ccpp.parser.ContentForm;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 
-public class AnnouncementFragment extends Fragment implements onBackPressedListener{
+public class AnnouncementFragment extends Fragment implements onBackPressedListener {
     RecyclerView recyclerView;
     AnnouncementAdapter adapter;
     ArrayList<ContentForm> announcementList;

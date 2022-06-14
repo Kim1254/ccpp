@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.setting;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+
+import com.gachon.ccpp.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

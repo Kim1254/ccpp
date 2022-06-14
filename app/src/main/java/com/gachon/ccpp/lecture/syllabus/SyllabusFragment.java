@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.syllabus;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,16 +9,11 @@ import android.webkit.WebView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.gachon.ccpp.parser.ContentForm;
+import com.gachon.ccpp.R;
+import com.gachon.ccpp.listener.onBackPressedListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Objects;
-
-public class SyllabusFragment extends Fragment implements onBackPressedListener{
+public class SyllabusFragment extends Fragment implements onBackPressedListener {
     WebView syllabus;
     String content;
 

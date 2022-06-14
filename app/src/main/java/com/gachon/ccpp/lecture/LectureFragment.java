@@ -1,7 +1,6 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -10,7 +9,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
-import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -19,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gachon.ccpp.R;
+import com.gachon.ccpp.listener.onBackPressedListener;
 import com.gachon.ccpp.parser.ListForm;
 
 import java.util.ArrayList;

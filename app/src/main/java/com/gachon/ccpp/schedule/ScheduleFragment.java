@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.schedule;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,8 +15,8 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.gachon.ccpp.R;
 import com.gachon.ccpp.parser.ListForm;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
@@ -70,7 +70,7 @@ public class ScheduleFragment extends Fragment {
         cal.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                Intent intent = new Intent(getContext(), DeadlinePopupActivity.class);
+                Intent intent = new Intent(getContext(), PopupActivity.class);
                 intent.putExtra("schedule",(Serializable) scheduleList.get(date.getDay()));
                 startActivity(intent);
             }

@@ -1,4 +1,4 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.alarm;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -15,6 +15,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.gachon.ccpp.R;
 
 import java.util.ArrayList;
 import java.util.List;

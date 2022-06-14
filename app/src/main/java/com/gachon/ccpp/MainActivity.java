@@ -8,8 +8,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
+import com.gachon.ccpp.alarm.AlarmFragment;
+import com.gachon.ccpp.chat.ChatFragment;
+import com.gachon.ccpp.lecture.LectureFragment;
+import com.gachon.ccpp.schedule.ScheduleFragment;
+import com.gachon.ccpp.setting.SettingFragment;
 import com.gachon.ccpp.network.RetrofitAPI;
 import com.gachon.ccpp.network.RetrofitClient;
 
@@ -17,7 +21,6 @@ import org.jsoup.Jsoup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +34,6 @@ import com.gachon.ccpp.parser.ContentCollector;
 import com.gachon.ccpp.parser.ContentCollector.collectionListener;
 import com.gachon.ccpp.parser.HtmlParser;
 import com.gachon.ccpp.parser.ListForm;
-import com.gachon.ccpp.parser.TableForm;
 
 public class MainActivity extends AppCompatActivity {
     public static RetrofitClient retrofitClient;
@@ -93,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         sourceId = intent.getStringExtra("id");
 
         chat_listener = new chatListener();
-        ContentCollector.beginThread(chat_listener);
 
         bundle = new Bundle();
         bundle.putSerializable("courseList", intent.getSerializableExtra("courseList"));

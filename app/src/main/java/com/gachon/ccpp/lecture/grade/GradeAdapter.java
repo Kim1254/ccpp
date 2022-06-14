@@ -1,16 +1,12 @@
-package com.gachon.ccpp;
+package com.gachon.ccpp.lecture.grade;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,12 +16,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gachon.ccpp.OnViewHolderItemClickListener;
+import com.gachon.ccpp.listener.OnViewHolderItemClickListener;
 import com.gachon.ccpp.R;
-import com.gachon.ccpp.parser.ContentForm;
+import com.gachon.ccpp.lecture.assignment.AssignmentFragment;
 import com.gachon.ccpp.parser.TableForm;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class GradeAdapter extends RecyclerView.Adapter<GradeAdapter.GradeViewHolder> {
